@@ -12,7 +12,7 @@ languages: all
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Skills are written to `${SUPERPOWERS_SKILLS_ROOT}` (cloned to `~/.config/superpowers/skills/`).** You edit skills in your local branch of this repository.
+**Skills are written to `${UNI_SKILLS_ROOT}` (cloned to `~/.config/uni/skills/`).** You edit skills in your local branch of this repository.
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
 
@@ -71,10 +71,10 @@ API docs, syntax guides, tool documentation (office docs)
 
 ## Directory Structure
 
-**All skills are in the skills repository at `${SUPERPOWERS_SKILLS_ROOT}`:**
+**All skills are in the skills repository at `${UNI_SKILLS_ROOT}`:**
 
 ```
-${SUPERPOWERS_SKILLS_ROOT}
+${UNI_SKILLS_ROOT}
   skill-name/
     SKILL.md              # Main reference (required)
     supporting-file.*     # Only if needed
@@ -266,7 +266,7 @@ Use path format without `@` prefix or `/SKILL.md` suffix:
 
 **Why no @ links:** `@` syntax force-loads files immediately, consuming 200k+ context before you need them.
 
-**To read a skill reference:** Use Read tool on `${SUPERPOWERS_SKILLS_ROOT}/category/skill-name/SKILL.md`
+**To read a skill reference:** Use Read tool on `${UNI_SKILLS_ROOT}/category/skill-name/SKILL.md`
 
 ## Flowchart Usage
 

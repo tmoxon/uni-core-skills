@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Migrate conversation archive and index from ~/.clank to ~/.config/superpowers
+# Migrate conversation archive and index from ~/.clank to ~/.config/uni
 #
 # IMPORTANT: This preserves all data. The old ~/.clank directory is not deleted,
 # allowing you to verify the migration before removing it manually.
@@ -7,15 +7,15 @@
 set -euo pipefail
 
 # Determine target directory
-SUPERPOWERS_DIR="${PERSONAL_SUPERPOWERS_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/superpowers}"
+UNI_DIR="${PERSONAL_UNI_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/uni}"
 
 OLD_ARCHIVE="$HOME/.clank/conversation-archive"
 OLD_INDEX="$HOME/.clank/conversation-index"
 
-NEW_ARCHIVE="${SUPERPOWERS_DIR}/conversation-archive"
-NEW_INDEX="${SUPERPOWERS_DIR}/conversation-index"
+NEW_ARCHIVE="${UNI_DIR}/conversation-archive"
+NEW_INDEX="${UNI_DIR}/conversation-index"
 
-echo "Migration: ~/.clank → ${SUPERPOWERS_DIR}"
+echo "Migration: ~/.clank → ${UNI_DIR}"
 echo ""
 
 # Check if source exists
@@ -53,7 +53,7 @@ else
 fi
 
 echo ""
-echo "Destination: ${SUPERPOWERS_DIR}"
+echo "Destination: ${UNI_DIR}"
 echo ""
 
 # Confirm
@@ -65,7 +65,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # Ensure destination base exists
-mkdir -p "${SUPERPOWERS_DIR}"
+mkdir -p "${UNI_DIR}"
 
 # Migrate archive
 if [[ -d "$OLD_ARCHIVE" ]]; then
@@ -84,7 +84,7 @@ fi
 # Update database paths to point to new location
 if [[ -f "$NEW_INDEX/db.sqlite" ]]; then
     echo "Updating database paths..."
-    sqlite3 "$NEW_INDEX/db.sqlite" "UPDATE exchanges SET archive_path = REPLACE(archive_path, '/.clank/', '/.config/superpowers/') WHERE archive_path LIKE '%/.clank/%';"
+    sqlite3 "$NEW_INDEX/db.sqlite" "UPDATE exchanges SET archive_path = REPLACE(archive_path, '/.clank/', '/.config/uni/') WHERE archive_path LIKE '%/.clank/%';"
     echo "  ✓ Database paths updated"
 fi
 

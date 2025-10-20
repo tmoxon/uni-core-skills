@@ -1,6 +1,6 @@
 ---
 name: Pulling Updates from Skills Repository
-description: Sync local skills repository with upstream changes from obra/superpowers-skills
+description: Sync local skills repository with upstream changes from obra/uni-skills
 when_to_use: when session start indicates new upstream skills available, or when manually updating to latest versions
 version: 1.2.0
 ---
@@ -9,7 +9,7 @@ version: 1.2.0
 
 ## Overview
 
-Pull and merge upstream changes from obra/superpowers-skills into your local skills repository while preserving your personal modifications.
+Pull and merge upstream changes from obra/uni-skills into your local skills repository while preserving your personal modifications.
 
 **Announce at start:** "I'm using the Updating Skills skill to sync with upstream."
 
@@ -23,7 +23,7 @@ Your skills repo must have a tracking branch configured. The plugin sets this up
 
 Run:
 ```bash
-cd ~/.config/superpowers/skills
+cd ~/.config/uni/skills
 git status
 ```
 
@@ -107,7 +107,7 @@ git stash pop
 
 Run:
 ```bash
-${SUPERPOWERS_SKILLS_ROOT}/skills/using-skills/find-skills
+${UNI_SKILLS_ROOT}/skills/using-skills/find-skills
 ```
 
 Expected: Skills list displays correctly

@@ -22,7 +22,7 @@ version: 4.0.2
 
 **2. If relevant skill exists, YOU MUST use it:**
 
-- Use Read tool with full path: `${SUPERPOWERS_SKILLS_ROOT}/skills/category/skill-name/SKILL.md`
+- Use Read tool with full path: `${UNI_SKILLS_ROOT}/skills/category/skill-name/SKILL.md`
 - Read ENTIRE file, not just frontmatter
 - Announce: "I've read [Skill Name] skill and I'm using it to [purpose]"
 - Follow it exactly

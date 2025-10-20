@@ -8,8 +8,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-SUPERPOWERS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/superpowers"
-LOG_FILE="${SUPERPOWERS_DIR}/search-log.jsonl"
+UNI_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/uni"
+LOG_FILE="${UNI_DIR}/search-log.jsonl"
 
 # Show help
 if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
@@ -32,7 +32,7 @@ OUTPUT:
 
 SEARCH:
   Searches both skill content AND path names.
-  Skills location: ~/.config/superpowers/skills/
+  Skills location: ~/.config/uni/skills/
 EOF
     exit 0
 fi

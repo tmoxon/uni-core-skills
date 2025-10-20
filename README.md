@@ -9,7 +9,7 @@ Community-editable skills for the Uni skills plugin.
 
 ## Installation
 
-This repository is automatically cloned by the superpowers plugin to `~/.config/uni/skills/`.
+This repository is automatically cloned by the uni plugin to `~/.config/uni/skills/`.
 
 ## Contributing
 

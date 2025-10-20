@@ -35,7 +35,7 @@ Search archived conversations using semantic similarity or exact text matching.
 
 ## Direct Search (Manual/CLI)
 
-**Tool:** `${SUPERPOWERS_SKILLS_ROOT}/skills/collaboration/remembering-conversations/tool/search-conversations`
+**Tool:** `${UNI_SKILLS_ROOT}/skills/collaboration/remembering-conversations/tool/search-conversations`
 
 **Modes:**
 ```bash

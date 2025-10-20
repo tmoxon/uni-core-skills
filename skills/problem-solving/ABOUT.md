@@ -37,4 +37,4 @@ The amplifier agents are specialized long-lived agents with structured JSON outp
 
 ## Core Insight
 
-Agent capabilities are domain-agnostic patterns. Whether packaged as "amplifier agent" or "superpowers skill", the underlying technique is the same. We extracted the techniques and made them portable.
+Agent capabilities are domain-agnostic patterns. Whether packaged as "amplifier agent" or "uni skill", the underlying technique is the same. We extracted the techniques and made them portable.

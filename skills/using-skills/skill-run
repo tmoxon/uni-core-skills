@@ -17,7 +17,7 @@ Examples:
   scripts/skill-run skills/collaboration/remembering-conversations/tool/index-conversations --cleanup
 
 The script will be found at:
-  ${SUPERPOWERS_SKILLS_ROOT}/<skill-relative-path>
+  ${UNI_SKILLS_ROOT}/<skill-relative-path>
 EOF
     exit 1
 fi
