@@ -1,6 +1,6 @@
-# Superpowers Skills
+# Uni! Skills
 
-Community-editable skills for Claude Code's superpowers plugin.
+Community-editable skills for the Uni skills plugin.
 
 ## Structure
 
@@ -9,7 +9,7 @@ Community-editable skills for Claude Code's superpowers plugin.
 
 ## Installation
 
-This repository is automatically cloned by the superpowers plugin to `~/.config/superpowers/skills/`.
+This repository is automatically cloned by the superpowers plugin to `~/.config/uni/skills/`.
 
 ## Contributing
 
