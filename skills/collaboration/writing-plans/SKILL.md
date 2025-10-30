@@ -15,7 +15,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Announce at start:** "I'm using the Writing Plans skill to create the implementation plan."
 
-**Context:** This should be run in a dedicated worktree (created by brainstorming skill).
+**Context:** This should be run in the `/target` repository (set up by brainstorming skill).
 
 **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
@@ -114,5 +114,5 @@ After saving the plan, offer execution choice:
 - Fresh subagent per task + code review
 
 **If Parallel Session chosen:**
-- Guide them to open new session in worktree
+- Guide them to work in the `/target` repository
 - New session uses skills/collaboration/executing-plans
