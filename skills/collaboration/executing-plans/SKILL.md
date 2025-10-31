@@ -25,7 +25,7 @@ Load plan, review critically, execute tasks in batches, report for review betwee
 ## The Process
 
 ### Step 1: Understand the target repository
-1. Read `/target/claude-project.md` if it exists — this describes the project setup (framework, conventions, coding style, etc.).
+1. Read `/target/claude.md` if it exists — this describes the project setup (framework, conventions, coding style, etc.).
 2. If that file does not exist, infer the project type by reading:
    - `/target/package.json`
    - `/target/tsconfig.json`
