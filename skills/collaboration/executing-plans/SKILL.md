@@ -35,14 +35,16 @@ Load behavioral plan, review critically, execute tasks using strict Test-Driven 
 3. Summarize what you learn (e.g., "React + Next.js app using TypeScript").
 4. Keep this in mind when generating code or patching files.
 
-### Step 2: Load and Review Behavioral Plan
+### Step 2: Load and Parse Hierarchical Plan
 1. Read behavioral plan file
-2. **Verify plan contains behavioral specifications, not concrete code**
-3. Review critically - identify any questions about acceptance criteria, test scenarios, or behavioral requirements
-4. **Confirm each task has clear test scenarios for TDD implementation**
-5. If concerns: Raise them with your human partner before starting
-6. If plan contains concrete code instead of behaviors: Ask partner to revise using @collaboration/writing-plans
-7. If no concerns: Create TodoWrite and proceed with TDD implementation
+2. **Verify plan contains hierarchical task structure (1, 1.1, 1.2, 2, etc.)**
+3. **Parse task dependency chain** - identify execution order
+4. **Extract isolated contexts** - separate what each agent needs to know
+5. Review critically - identify any questions about task dependencies or isolation
+6. **Confirm each task has clear behavioral specifications and interface contracts**
+7. If concerns: Raise them with your human partner before starting
+8. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
+9. If no concerns: Create TodoWrite with hierarchical task list and proceed
 
 ### Step 3: Implement the plan in the target repo
 - Create or update files directly under `/target/src/...`
@@ -64,22 +66,40 @@ Example:
 }
 ```
 
-### Step 4: Execute Batch with TDD
-**Default: First 3 tasks**
+### Step 4: Execute Tasks with Isolated Agents
+**Execute tasks in dependency order (1, 1.1, 1.2, then 2, 2.1, etc.)**
 
-For each task:
-1. Mark as in_progress
-2. **Announce:** "Following Test-Driven Development for this task"
-3. **Switch to @testing/test-driven-development skill**
-4. **For each behavioral requirement in the task:**
-   - RED: Write failing test based on acceptance criteria
-   - Verify test fails correctly
-   - GREEN: Write minimal implementation to pass test
-   - Verify test passes and all existing tests still pass
-   - REFACTOR: Clean up code while keeping tests green
-5. **Commit each Red-Green-Refactor cycle**
-6. **Verify all task acceptance criteria are met**
-7. Mark as completed
+For each task in execution order:
+1. **Mark task as in_progress**
+2. **Extract isolated context** for this specific task number
+3. **Dispatch dedicated agent** with ONLY the context for this task:
+
+```bash
+# Dispatch task-specific agent
+Task agent for Task X.Y:
+  context: |
+    You are implementing Task X.Y from the hierarchical plan.
+    
+    TASK SCOPE: [Only this specific task's behavior and context]
+    ACCEPTANCE CRITERIA: [Only this task's criteria]
+    FILES TO CREATE/MODIFY: [Only files for this task]
+    DEPENDENCIES AVAILABLE: [Interfaces from completed tasks]
+    INTERFACE TO PROVIDE: [What this task must expose for future tasks]
+    
+    MANDATORY: Use skills/testing/test-driven-development/SKILL.md
+    
+    You do NOT have access to:
+    - Other task details from the plan
+    - Full system architecture beyond your scope
+    - Implementation details of other tasks
+    
+    Report back: Interface contracts implemented, tests passing, ready for dependent tasks
+```
+
+4. **Agent implements using TDD** (isolated to their task scope)
+5. **Verify task completion** and interface contracts
+6. **Update dependency chain** - mark interfaces available for dependent tasks
+7. **Mark task as completed**
 
 ### Step 5: Apply and commit the plan
 
@@ -106,20 +126,23 @@ After running, confirm the branch contains your changes:
 git -C /target status
 ```
 
-### Step 6: Report
+### Step 6: Report Hierarchical Progress
 When batch complete:
-- Show what behaviors were implemented
-- **Report TDD compliance:** Number of Red-Green-Refactor cycles completed
-- Show test results: All tests passing, coverage of acceptance criteria
-- Show verification output
-- **Confirm:** "All tasks followed Test-Driven Development methodology"
-- Say: "Ready for feedback."
+- **Show task hierarchy status:** Which tasks completed (1 ✅, 1.1 ✅, 1.2 🔄, 2 ⏳)
+- **Report agent isolation:** Each task agent worked with isolated context
+- **Show interface contracts:** What each completed task provides to dependents
+- **Report TDD compliance:** All task agents followed Test-Driven Development
+- Show test results: All task tests passing, interface contracts verified
+- **Next tasks ready:** Which tasks can now proceed (dependencies satisfied)
+- Say: "Ready for feedback on hierarchical progress."
 
-### Step 7: Continue
+### Step 7: Manage Dependencies and Continue  
 Based on feedback:
-- Apply changes if needed
-- Execute next batch
-- Repeat until complete
+- Apply changes if needed to completed tasks
+- **Check dependency chain:** Which tasks are now unblocked
+- **Execute next batch** of ready tasks (dependencies satisfied)
+- **Maintain interface contracts:** Ensure dependent tasks get what they need
+- Repeat until complete hierarchy executed
 
 ### Step 8: Report back
 After applying and committing:

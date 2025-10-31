@@ -372,10 +372,11 @@ No exceptions without your human partner's permission.
 - skills/collaboration/executing-plans (mandatory for every task)
 - skills/collaboration/subagent-driven-development (for TDD-compliant implementation)
 
-**When executing behavioral plans:**
-1. Each task acceptance criteria becomes test scenarios
-2. Follow Red-Green-Refactor for each behavioral requirement
-3. Commit after each complete cycle
-4. Report TDD compliance back to execution skill
+**When executing hierarchical behavioral plans:**
+1. Each isolated agent receives ONE task's acceptance criteria
+2. Follow Red-Green-Refactor for each behavioral requirement in the isolated task
+3. Create interface contracts for dependent tasks
+4. Commit after each complete cycle
+5. Report TDD compliance and interface contracts back to execution skill
 
-**Integration principle:** Plans specify WHAT (behaviors), TDD determines HOW (implementation).
+**Integration principle:** Hierarchical plans specify WHAT (behaviors per task), TDD determines HOW (implementation), agent isolation prevents scope creep.

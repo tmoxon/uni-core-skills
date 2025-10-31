@@ -21,46 +21,61 @@ Execute behavioral plans by dispatching TDD-focused subagent per task, with code
 
 **When to use:**
 - Staying in this session  
-- Tasks are mostly independent behavioral requirements
-- Want continuous TDD-driven progress with quality gates
-- Behavioral plan exists (not concrete code plan)
+- Hierarchical plan exists with task numbers (1, 1.1, 1.2, 2, etc.)
+- Want agent isolation per task with TDD compliance
+- Tasks have clear dependency chains and interface contracts
+- Behavioral specifications exist (not concrete code plan)
 
 **When NOT to use:**
-- Plan contains concrete code instead of behavioral specs (rewrite with @collaboration/writing-plans first)
-- Tasks are tightly coupled (manual TDD execution better)
+- Plan lacks hierarchical task structure (rewrite with @collaboration/writing-plans first)
+- Plan contains concrete code instead of behavioral specs
+- Task dependencies are unclear or circular
 - Plan needs behavioral revision (brainstorm first)
 
 ## The Process
 
-### 1. Load Plan
+### 1. Load Hierarchical Plan
 
-Read plan file, create TodoWrite with all tasks.
+Read plan file, parse task hierarchy (1, 1.1, 1.2, 2, etc.), create TodoWrite with dependency-ordered execution.
 
 ### 2. Execute Task with Subagent
 
 For each task:
 
-**Dispatch fresh subagent:**
+**Dispatch task-isolated subagent:**
 ```
-Task tool (general-purpose):
-  description: "Implement Task N: [task name] using Test-Driven Development"
+Task tool (task-isolated):
+  description: "Implement Task X.Y: [specific task name] with isolated context and TDD"
   prompt: |
-    You are implementing Task N from [plan-file] using STRICT Test-Driven Development.
-
-    MANDATORY: Use skills/testing/test-driven-development/SKILL.md for every implementation.
-
-    Read the behavioral task specification carefully. Your job is to:
-    1. **Follow TDD Red-Green-Refactor cycle for every behavioral requirement**
-    2. **RED:** Write failing test based on acceptance criteria
-    3. **GREEN:** Write minimal code to pass the test
-    4. **REFACTOR:** Clean up while keeping tests green
-    5. Commit after each complete Red-Green-Refactor cycle
-    6. Verify all acceptance criteria have passing tests
-    7. Report back with TDD compliance details
-
+    You are implementing ONLY Task X.Y from a hierarchical plan using STRICT Test-Driven Development.
+    
+    ISOLATED CONTEXT - You only see:
+    ================================
+    TASK NUMBER: X.Y
+    BEHAVIOR: [Only this task's behavioral requirement]
+    ACCEPTANCE CRITERIA: [Only this task's criteria] 
+    FILES TO CREATE: [Only files for this task]
+    DEPENDENCIES AVAILABLE: [Interfaces from completed tasks]
+    INTERFACE TO PROVIDE: [What you must expose for future tasks]
+    
+    MANDATORY: Use skills/testing/test-driven-development/SKILL.md
+    
+    RESTRICTIONS - You do NOT have access to:
+    ========================================
+    - Other task details from the plan
+    - Full system architecture beyond your scope  
+    - Implementation details of other tasks
+    - The complete plan structure
+    
+    Your job using TDD:
+    1. **Follow Red-Green-Refactor for each acceptance criteria**
+    2. **Create interface contracts** for dependent tasks
+    3. **Verify all acceptance criteria** with passing tests
+    4. Commit after each TDD cycle
+    
     Work from: [directory]
-
-    Report: What behaviors you implemented, TDD cycles completed, test results, files changed, TDD compliance verification
+    
+    Report: Task X.Y complete, interface contracts defined, TDD cycles completed, tests passing
 ```
 
 **Subagent reports back** with summary of work.
@@ -72,15 +87,17 @@ Task tool (general-purpose):
 Task tool (code-reviewer):
   Use template at skills/collaboration/requesting-code-review/code-reviewer.md
 
-  WHAT_WAS_IMPLEMENTED: [from subagent's report]
-  PLAN_OR_REQUIREMENTS: Task N from [plan-file]
+  WHAT_WAS_IMPLEMENTED: [from isolated subagent's report]
+  PLAN_OR_REQUIREMENTS: Task X.Y isolated requirements only
   BASE_SHA: [commit before task]
   HEAD_SHA: [current commit]
-  DESCRIPTION: [task summary]
-  TDD_COMPLIANCE: Verify Red-Green-Refactor cycles followed, tests written first, behavioral requirements covered
+  DESCRIPTION: [task X.Y summary]
+  TDD_COMPLIANCE: Verify Red-Green-Refactor cycles, tests first, acceptance criteria covered
+  INTERFACE_CONTRACTS: Verify interfaces defined for dependent tasks
+  ISOLATION_COMPLIANCE: Verify agent only implemented assigned task scope
 ```
 
-**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), TDD Compliance Assessment
+**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), TDD Compliance, Interface Contract Verification
 
 ### 4. Apply Review Feedback
 
