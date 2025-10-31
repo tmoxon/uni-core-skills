@@ -1,33 +1,34 @@
 ---
 name: Subagent-Driven Development
-description: Execute implementation plan by dispatching fresh subagent for each task, with code review between tasks
-when_to_use: when executing implementation plans with independent tasks in the current session, using fresh subagents with review gates
-version: 1.1.0
+description: Execute behavioral plans using TDD-focused subagents for each task, with code review verifying TDD compliance
+when_to_use: when executing behavioral implementation plans with independent tasks in the current session, enforcing Test-Driven Development
+version: 2.0.0
 ---
 
 # Subagent-Driven Development
 
-Execute plan by dispatching fresh subagent per task, with code review after each.
+Execute behavioral plans by dispatching TDD-focused subagent per task, with code review verifying TDD compliance after each.
 
-**Core principle:** Fresh subagent per task + review between tasks = high quality, fast iteration
+**Core principle:** Fresh TDD-compliant subagent per task + TDD compliance review = high quality, test-driven iteration
 
 ## Overview
 
 **vs. Executing Plans (parallel session):**
 - Same session (no context switch)
-- Fresh subagent per task (no context pollution)
-- Code review after each task (catch issues early)
-- Faster iteration (no human-in-loop between tasks)
+- Fresh TDD-focused subagent per task (no context pollution)
+- TDD compliance review after each task (catch violations early)
+- Faster iteration with test-driven quality assurance
 
 **When to use:**
-- Staying in this session
-- Tasks are mostly independent
-- Want continuous progress with quality gates
+- Staying in this session  
+- Tasks are mostly independent behavioral requirements
+- Want continuous TDD-driven progress with quality gates
+- Behavioral plan exists (not concrete code plan)
 
 **When NOT to use:**
-- Need to review plan first (use executing-plans)
-- Tasks are tightly coupled (manual execution better)
-- Plan needs revision (brainstorm first)
+- Plan contains concrete code instead of behavioral specs (rewrite with @collaboration/writing-plans first)
+- Tasks are tightly coupled (manual TDD execution better)
+- Plan needs behavioral revision (brainstorm first)
 
 ## The Process
 
@@ -42,20 +43,24 @@ For each task:
 **Dispatch fresh subagent:**
 ```
 Task tool (general-purpose):
-  description: "Implement Task N: [task name]"
+  description: "Implement Task N: [task name] using Test-Driven Development"
   prompt: |
-    You are implementing Task N from [plan-file].
+    You are implementing Task N from [plan-file] using STRICT Test-Driven Development.
 
-    Read that task carefully. Your job is to:
-    1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
-    4. Commit your work
-    5. Report back
+    MANDATORY: Use skills/testing/test-driven-development/SKILL.md for every implementation.
+
+    Read the behavioral task specification carefully. Your job is to:
+    1. **Follow TDD Red-Green-Refactor cycle for every behavioral requirement**
+    2. **RED:** Write failing test based on acceptance criteria
+    3. **GREEN:** Write minimal code to pass the test
+    4. **REFACTOR:** Clean up while keeping tests green
+    5. Commit after each complete Red-Green-Refactor cycle
+    6. Verify all acceptance criteria have passing tests
+    7. Report back with TDD compliance details
 
     Work from: [directory]
 
-    Report: What you implemented, what you tested, test results, files changed, any issues
+    Report: What behaviors you implemented, TDD cycles completed, test results, files changed, TDD compliance verification
 ```
 
 **Subagent reports back** with summary of work.
@@ -72,18 +77,20 @@ Task tool (code-reviewer):
   BASE_SHA: [commit before task]
   HEAD_SHA: [current commit]
   DESCRIPTION: [task summary]
+  TDD_COMPLIANCE: Verify Red-Green-Refactor cycles followed, tests written first, behavioral requirements covered
 ```
 
-**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), Assessment
+**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), TDD Compliance Assessment
 
 ### 4. Apply Review Feedback
 
 **If issues found:**
-- Fix Critical issues immediately
+- Fix Critical issues immediately (including TDD violations)
 - Fix Important issues before next task
+- **TDD Compliance Issues:** Must be fixed immediately - no exceptions
 - Note Minor issues
 
-**Dispatch follow-up subagent if needed:**
+**Dispatch follow-up subagent if needed (must follow TDD):**
 ```
 "Fix issues from code review: [list issues]"
 ```

@@ -365,3 +365,17 @@ Otherwise → not TDD
 ```
 
 No exceptions without your human partner's permission.
+
+## Integration with Execution Workflows
+
+**Called by:**
+- skills/collaboration/executing-plans (mandatory for every task)
+- skills/collaboration/subagent-driven-development (for TDD-compliant implementation)
+
+**When executing behavioral plans:**
+1. Each task acceptance criteria becomes test scenarios
+2. Follow Red-Green-Refactor for each behavioral requirement
+3. Commit after each complete cycle
+4. Report TDD compliance back to execution skill
+
+**Integration principle:** Plans specify WHAT (behaviors), TDD determines HOW (implementation).

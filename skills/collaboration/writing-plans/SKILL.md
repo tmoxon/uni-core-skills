@@ -9,9 +9,11 @@ version: 2.1.0
 
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Write comprehensive implementation plans focused on **behavioral specifications** and **abstract syntax** rather than concrete code. Define WHAT needs to be implemented through clear test scenarios, expected behaviors, and architectural patterns. The implementation will follow strict TDD methodology during execution.
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+Plans should specify **desired behaviors**, **test scenarios**, **architectural constraints**, and **integration points** - but NOT the specific implementation code.
+
+Assume the implementing engineer will follow Test-Driven Development and needs clear behavioral requirements to write meaningful tests.
 
 **Announce at start:** "I'm using the Writing Plans skill to create the implementation plan."
 
@@ -21,12 +23,13 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 ## Bite-Sized Task Granularity
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
+**Each task defines one behavioral unit (10-30 minutes including TDD cycle):**
+- Clear behavior description with acceptance criteria
+- Expected test scenarios (inputs/outputs, edge cases)
+- Integration requirements and constraints
+- Definition of "done" (what tests should pass)
+
+**TDD execution will break each task into Red-Green-Refactor cycles during implementation.**
 
 ## Plan Document Header
 
@@ -49,70 +52,72 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ## Task Structure
 
 ```markdown
-### Task N: [Component Name]
+### Task N: [Behavior/Component Name]
 
-**Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+**Behavior:** Clear description of what this component should do
 
-**Step 1: Write the failing test**
+**Acceptance Criteria:**
+- Given [context/input]
+- When [action occurs]
+- Then [expected outcome]
+- And [additional constraints]
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-```
+**Test Scenarios:**
+- Happy path: [normal case description]
+- Edge cases: [boundary conditions, empty inputs, null values]
+- Error cases: [invalid inputs, system failures]
 
-**Step 2: Run test to verify it fails**
+**Integration Points:**
+- Depends on: [other components/services this needs]
+- Provides: [interface/API this exposes]
+- Side effects: [database changes, file operations, network calls]
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+**Files to Create/Modify:**
+- Implementation: `exact/path/to/file.py` 
+- Tests: `tests/exact/path/to/test.py`
+- Integration: `exact/path/to/integration_point.py`
 
-**Step 3: Write minimal implementation**
+**Architecture Notes:**
+- Design patterns to use: [e.g., Factory, Observer, Strategy]
+- Performance constraints: [response time, memory usage]
+- Security considerations: [input validation, authorization]
 
-```python
-def function(input):
-    return expected
-```
-
-**Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-**Step 5: Commit**
-
-```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
-```
+**Definition of Done:**
+- All acceptance criteria have passing tests
+- All edge cases covered with tests
+- Integration points tested
+- Code follows project conventions
 ```
 
 ## Remember
-- Exact file paths always
-- Complete code in plan (not "add validation")
-- Exact commands with expected output
-- Reference relevant skills with @ syntax
-- DRY, YAGNI, TDD, frequent commits
+
+- **Behavior-focused:** Describe WHAT, not HOW
+- **Test scenarios:** Clear inputs/outputs for TDD implementation
+- **Exact file paths:** Where implementation and tests should go
+- **Architectural constraints:** Design patterns, performance, security
+- **Integration points:** Dependencies and interfaces
+- **No concrete code:** Let TDD drive the implementation
+- **Reference relevant skills:** Use @ syntax for skills like @testing/test-driven-development
 
 ## Execution Handoff
 
 After saving the plan, offer execution choice:
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**"Behavioral plan complete and saved to `docs/plans/<filename>.md`. Implementation will follow strict Test-Driven Development. Two execution options:**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+**1. Subagent-Driven (this session)** - I dispatch TDD-focused subagent per task, ensure Red-Green-Refactor cycle compliance
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+**2. Parallel Session (separate)** - Open new session with executing-plans skill, enforces TDD methodology with batch execution
 
 **Which approach?"**
 
 **If Subagent-Driven chosen:**
 - Use skills/collaboration/subagent-driven-development
 - Stay in this session
-- Fresh subagent per task + code review
+- Each subagent MUST follow @testing/test-driven-development
+- Code review includes TDD compliance verification
 
 **If Parallel Session chosen:**
-- Guide them to work in the `/target` repository
+- Guide them to work in the `/target` repository  
 - New session uses skills/collaboration/executing-plans
+- Executing-plans will enforce @testing/test-driven-development for each task

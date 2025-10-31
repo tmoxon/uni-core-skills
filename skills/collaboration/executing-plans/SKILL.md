@@ -16,11 +16,13 @@ version: 2.2.0
 
 ## Overview
 
-Load plan, review critically, execute tasks in batches, report for review between batches.
+Load behavioral plan, review critically, execute tasks using strict Test-Driven Development methodology, report for review between batches.
 
-**Core principle:** Batch execution with checkpoints for architect review.
+**Core principle:** TDD-driven batch execution with checkpoints for architect review.
 
-**Announce at start:** "I'm using the Executing Plans skill to implement this plan."
+**Every task MUST follow Red-Green-Refactor cycle using @testing/test-driven-development skill.**
+
+**Announce at start:** "I'm using the Executing Plans skill to implement this plan with Test-Driven Development."
 
 ## The Process
 
@@ -33,11 +35,14 @@ Load plan, review critically, execute tasks in batches, report for review betwee
 3. Summarize what you learn (e.g., "React + Next.js app using TypeScript").
 4. Keep this in mind when generating code or patching files.
 
-### Step 2: Load and Review Plan
-1. Read plan file
-2. Review critically - identify any questions or concerns about the plan
-3. If concerns: Raise them with your human partner before starting
-4. If no concerns: Create TodoWrite and proceed
+### Step 2: Load and Review Behavioral Plan
+1. Read behavioral plan file
+2. **Verify plan contains behavioral specifications, not concrete code**
+3. Review critically - identify any questions about acceptance criteria, test scenarios, or behavioral requirements
+4. **Confirm each task has clear test scenarios for TDD implementation**
+5. If concerns: Raise them with your human partner before starting
+6. If plan contains concrete code instead of behaviors: Ask partner to revise using @collaboration/writing-plans
+7. If no concerns: Create TodoWrite and proceed with TDD implementation
 
 ### Step 3: Implement the plan in the target repo
 - Create or update files directly under `/target/src/...`
@@ -59,14 +64,22 @@ Example:
 }
 ```
 
-### Step 4: Execute Batch
+### Step 4: Execute Batch with TDD
 **Default: First 3 tasks**
 
 For each task:
 1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed
+2. **Announce:** "Following Test-Driven Development for this task"
+3. **Switch to @testing/test-driven-development skill**
+4. **For each behavioral requirement in the task:**
+   - RED: Write failing test based on acceptance criteria
+   - Verify test fails correctly
+   - GREEN: Write minimal implementation to pass test
+   - Verify test passes and all existing tests still pass
+   - REFACTOR: Clean up code while keeping tests green
+5. **Commit each Red-Green-Refactor cycle**
+6. **Verify all task acceptance criteria are met**
+7. Mark as completed
 
 ### Step 5: Apply and commit the plan
 
@@ -95,8 +108,11 @@ git -C /target status
 
 ### Step 6: Report
 When batch complete:
-- Show what was implemented
+- Show what behaviors were implemented
+- **Report TDD compliance:** Number of Red-Green-Refactor cycles completed
+- Show test results: All tests passing, coverage of acceptance criteria
 - Show verification output
+- **Confirm:** "All tasks followed Test-Driven Development methodology"
 - Say: "Ready for feedback."
 
 ### Step 7: Continue
@@ -143,9 +159,10 @@ After all tasks complete and verified:
 **Don't force through blockers** - stop and ask.
 
 ## Remember
-- Review plan critically first
-- Follow plan steps exactly
-- Don't skip verifications
-- Reference skills when plan says to
-- Between batches: just report and wait
-- Stop when blocked, don't guess
+- Review behavioral plan critically first
+- **ALWAYS use @testing/test-driven-development for every task**
+- Follow Red-Green-Refactor cycle religiously
+- Don't skip test failures - they guide implementation
+- Reference skills when plan says to (@testing/test-driven-development is mandatory)
+- Between batches: report TDD compliance and test results
+- Stop when blocked, don't guess or skip TDD steps
