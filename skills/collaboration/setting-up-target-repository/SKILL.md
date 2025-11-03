@@ -52,6 +52,36 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
+### 2.5. Check Configuration Requirements
+
+**Environment Variables (.env files)**
+
+Many projects need environment configuration. Check for:
+
+```bash
+# Look for .env.example or .env.template
+if [ -f .env.example ]; then
+  echo "⚠️  Copy .env.example to .env and configure:"
+  echo "cp .env.example .env"
+  echo "# Edit .env with appropriate values"
+fi
+```
+
+**Node.js Module Type Issues**
+
+If using TypeScript/ES modules in Node.js, ensure `package.json` specifies module type:
+
+```json
+{
+  "type": "module"
+}
+```
+
+Common symptoms:
+- `MODULE_TYPELESS_PACKAGE_JSON` warnings
+- "does not parse as CommonJS" errors
+- Import/export syntax errors
+
 ### 3. Verify Clean Baseline
 
 Run tests to ensure target repository starts clean:
@@ -84,6 +114,9 @@ Ready to implement <feature-name>
 | No package.json/Cargo.toml | Skip dependency install |
 | Branch already exists | Checkout existing or create with different name |
 | Dependencies missing | Auto-detect and install based on project files |
+| .env.example exists | Guide user to copy and configure .env |
+| ES module syntax errors | Check if package.json needs `"type": "module"` |
+| Database connection errors | Check for missing DATABASE_URL or similar |
 
 ## Common Mistakes
 
@@ -102,6 +135,14 @@ Ready to implement <feature-name>
 **Hardcoding setup commands**
 - **Problem:** Breaks on projects using different tools
 - **Fix:** Auto-detect from project files (package.json, etc.)
+
+**Missing environment configuration**
+- **Problem:** App fails with "connection string" or "configuration" errors
+- **Fix:** Check for .env.example, guide user through setup
+
+**Node.js module type confusion**
+- **Problem:** ES module syntax in CommonJS project (or vice versa)
+- **Fix:** Check package.json for `"type": "module"`, add if using import/export
 
 ## Example Workflow
 
