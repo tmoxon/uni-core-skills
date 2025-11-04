@@ -21,7 +21,7 @@ Execute behavioral plans by dispatching TDD-focused subagent per task, with code
 
 **When to use:**
 - Staying in this session  
-- Hierarchical plan exists with task numbers (1, 1.1, 1.2, 2, etc.)
+- Hierarchical plan exists with main tasks and subtasks (quantity determined by complexity)
 - Want agent isolation per task with TDD compliance
 - Tasks have clear dependency chains and interface contracts
 - Behavioral specifications exist (not concrete code plan)
@@ -36,18 +36,30 @@ Execute behavioral plans by dispatching TDD-focused subagent per task, with code
 
 ### 1. Load Hierarchical Plan
 
-Read plan file, parse task hierarchy (1, 1.1, 1.2, 2, etc.), create TodoWrite with dependency-ordered execution.
+**Check plan structure** and load accordingly:
+- **Multi-file plan:** Read `docs/plans/YYYY-MM-DD-<name>/plan.md` for overview, identify individual task files
+- **Single file plan:** Read `docs/plans/YYYY-MM-DD-<name>.md` (legacy format)
+
+Parse task hierarchy (based on plan's actual structure), create TodoWrite with dependency-ordered execution.
 
 ### 2. Execute Task with Subagent
 
 For each task:
 
-**Dispatch task-isolated subagent:**
+**Load task-specific file and dispatch subagent:**
+1. **For multi-file plans:** Load content from `taskX.Y.md` file
+2. **For single file plans:** Extract task X.Y section from full plan
+3. **Dispatch task-isolated subagent:**
+
 ```
 Task tool (task-isolated):
   description: "Implement Task X.Y: [specific task name] with isolated context and TDD"
   prompt: |
     You are implementing ONLY Task X.Y from a hierarchical plan using STRICT Test-Driven Development.
+    
+    TASK FILE CONTENT:
+    ==================
+    [Full content from taskX.Y.md file, or extracted section from single file]
     
     ISOLATED CONTEXT - You only see:
     ================================

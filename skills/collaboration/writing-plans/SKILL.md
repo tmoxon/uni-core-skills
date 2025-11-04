@@ -15,11 +15,16 @@ Plans should specify **desired behaviors**, **test scenarios**, **architectural 
 
 Assume the implementing engineer will follow Test-Driven Development and needs clear behavioral requirements to write meaningful tests.
 
+**Task Decomposition Intelligence:** Determine subtask quantity based on complexity - simple features may need 1 subtask, complex features may need 5+ subtasks. Do not force rigid numbering patterns.
+
 **Announce at start:** "I'm using the Writing Plans skill to create the implementation plan."
 
 **Context:** This should be run in the `/target` repository (set up by brainstorming skill).
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Plan Organization:** Create folder structure `docs/plans/YYYY-MM-DD-<feature-name>/`
+- `plan.md` - Main orchestration file with task overview and execution order
+- `task1.md`, `task2.md`, etc. - Individual task files for each main task
+- `task1.1.md`, `task1.2.md`, etc. - Subtask files (create as many as needed per main task)
 
 ## Hierarchical Task Granularity
 
@@ -28,11 +33,12 @@ Assume the implementing engineer will follow Test-Driven Development and needs c
 - Have clear dependencies on other main tasks
 - Break down into focused subtasks
 
-**Subtasks (1.1, 1.2, 1.3...):** Isolated behavioral units (15-45 minutes including TDD)
+**Subtasks (1.1, 1.2, 1.3... as many as needed):** Isolated behavioral units (15-45 minutes including TDD)
 - Single behavioral responsibility 
 - Isolated context - agent only sees this subtask
 - Clear acceptance criteria and test scenarios
 - Well-defined interfaces for task dependencies
+- **Determine quantity based on complexity** - simple tasks may have 1 subtask, complex tasks may have 5+
 
 **Agent Isolation Principle:**
 - Each task number = one dedicated agent
@@ -40,9 +46,11 @@ Assume the implementing engineer will follow Test-Driven Development and needs c
 - No access to full plan or other task details
 - Must define interfaces for other tasks to consume
 
-## Plan Document Header
+## Plan Structure
 
-**Every plan MUST start with this header:**
+### Main Orchestration File (`plan.md`)
+
+**Every plan.md MUST start with this header:**
 
 ```markdown
 # [Feature Name] Implementation Plan
@@ -55,39 +63,93 @@ Assume the implementing engineer will follow Test-Driven Development and needs c
 
 **Tech Stack:** [Key technologies/libraries]
 
-**Task Execution Model:** Each task number (1, 1.1, 1.2, 2, etc.) will be assigned to a dedicated agent with isolated context.
+**Task Execution Model:** Each task number will be assigned to a dedicated agent with isolated context.
+
+## Task Overview
+
+Brief description of each main task and execution order:
+
+### Task 1: [Main Task Name] 
+- **File:** `task1.md`
+- **Purpose:** [Brief description]
+- **Depends On:** [Dependencies]
+- **Subtasks:** [Determine based on complexity] (files: `task1.1.md`, `task1.2.md`, etc. as needed)
+
+### Task 2: [Main Task Name]
+- **File:** `task2.md` 
+- **Purpose:** [Brief description]
+- **Depends On:** Task 1
+- **Subtasks:** [Determine based on complexity] (files: `task2.1.md`, etc. as needed)
+
+## Execution Order
+
+1. Task 1 → subtasks in dependency order
+2. Task 2 → subtasks in dependency order  
+3. [Continue based on dependencies]
+
+**Note:** Number of subtasks determined by complexity - simple main task may need only 1 subtask, complex main task may need 5+ subtasks.
 
 ---
 ```
+
+### Individual Task Files (`task1.md`, `task2.md`, etc.)
+
+**Each main task file structure:**
+
+```markdown
+# Task 1: [Main Task Name]
+
+**High-Level Behavior:** Overall goal of this main task
+
+**Depends On:** [Other main tasks this requires]
+**Provides To:** [Other main tasks that need this]
+
+**Subtasks:**
+[Analyze main task complexity and create appropriate number of subtasks]
+- Example for simple task: 1 subtask (1.1)
+- Example for moderate task: 3 subtasks (1.1, 1.2, 1.3)  
+- Example for complex task: 5+ subtasks (1.1, 1.2, 1.3, 1.4, 1.5, etc.)
+- Create only as many subtasks as the complexity demands
+
+**Execution Flow:** [Define dependency order based on actual subtasks created]
+```
+
+### Individual Subtask Files (`task1.1.md`, `task1.2.md`, etc. as needed)
+
+**Each subtask file structure:**
 
 ## Task Hierarchy Planning
 
 **Before writing tasks, create the hierarchy:**
 
 1. **Identify main features/components** → Main tasks (1, 2, 3...)
-2. **Break down into isolated behaviors** → Subtasks (1.1, 1.2, 1.3...)  
-3. **Define dependency chains** → Which tasks need outputs from which other tasks
-4. **Design interfaces** → How tasks communicate results to dependent tasks
+2. **Analyze complexity per main task** → Determine subtask quantity needed
+3. **Break down into isolated behaviors** → Subtasks (as many as needed: simple task = 1 subtask, complex task = 5+ subtasks)
+4. **Define dependency chains** → Which tasks need outputs from which other tasks
+5. **Design interfaces** → How tasks communicate results to dependent tasks
+
+## Intelligent Task Decomposition
+
+**For each main task, ask:**
+- Can this be implemented by one agent in 15-45 minutes with TDD? → **1 subtask**
+- Are there 2-3 distinct behavioral concerns? → **2-3 subtasks**
+- Complex multi-step process with many edge cases? → **4+ subtasks**
+- Massive feature with multiple integration points? → **5+ subtasks**
+
+**Examples:**
+- Simple CRUD endpoint → 1 subtask
+- User authentication → 3 subtasks (validation, token generation, middleware)
+- Complex search feature → 5 subtasks (indexing, query parsing, ranking, filtering, pagination)
+- E-commerce checkout → 7+ subtasks (cart validation, payment processing, inventory updates, email notifications, etc.)
 
 **Dependency Rules:**
-- Subtasks within a main task can depend on each other (1.1 → 1.2)
-- Main tasks can depend on other main tasks (Task 2 depends on Task 1)
+- Subtasks within a main task can depend on each other (based on actual decomposition)
+- Main tasks can depend on other main tasks (Task 2 depends on Task 1) 
 - No circular dependencies allowed
 - Each task defines clear interface contracts
 
-## Hierarchical Task Structure
-
-Create a numbered hierarchy with main tasks (1, 2, 3) and subtasks (1.1, 1.2, 2.1, etc.):
-
 ```markdown
-## Task 1: [Main Feature/Component Name]
-
-**High-Level Behavior:** Overall goal of this main task
-
-**Depends On:** [Other main tasks this requires: Task 2, Task 3]
-**Provides To:** [Other main tasks that need this: Task 4, Task 5]
-
-### Task 1.1: [Specific Sub-Behavior]
+# Task 1.1: [Specific Sub-Behavior]
 
 **Agent Context:** Everything this agent needs to know, isolated from other tasks
 
@@ -120,15 +182,15 @@ Create a numbered hierarchy with main tasks (1, 2, 3) and subtasks (1.1, 1.2, 2.
 - Interfaces defined for dependent tasks
 - Code follows project conventions
 - Agent reports completion with interface contracts
-
-### Task 1.2: [Another Sub-Behavior]
-
-[Same structure as 1.1, isolated context]
-
-## Task 2: [Next Main Feature/Component]
-
-[Same structure as Task 1]
 ```
+
+## File Creation Process
+
+1. **Create the plan folder:** `docs/plans/YYYY-MM-DD-<feature-name>/`
+2. **Create plan.md** with orchestration overview
+3. **Create task files** (task1.md, task2.md) for each main task
+4. **Create subtask files** (as many as needed based on complexity analysis)
+5. **Ensure consistent numbering** across all files
 
 **Key Principles:**
 - Each task number gets a dedicated agent
@@ -148,9 +210,14 @@ Create a numbered hierarchy with main tasks (1, 2, 3) and subtasks (1.1, 1.2, 2.
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving all plan files, offer execution choice:
 
-**"Hierarchical behavioral plan complete and saved to `docs/plans/<filename>.md`. Each task number will get a dedicated agent with isolated context. Implementation will follow strict Test-Driven Development. Two execution options:**
+**"Hierarchical behavioral plan complete and saved to `docs/plans/<folder-name>/` with:**
+- **`plan.md`** - Main orchestration file
+- **`task1.md`, `task2.md`** - Individual task files  
+- **Subtask files** - Individual files for each subtask (quantity determined by complexity)
+
+**Each task number will get a dedicated agent with isolated context. Implementation will follow strict Test-Driven Development. Two execution options:**
 
 **1. Subagent-Driven (this session)** - I dispatch isolated TDD-focused agent per task number, ensure hierarchical execution with dependency management
 

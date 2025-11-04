@@ -36,15 +36,22 @@ Load behavioral plan, review critically, execute tasks using strict Test-Driven 
 4. Keep this in mind when generating code or patching files.
 
 ### Step 2: Load and Parse Hierarchical Plan
-1. Read behavioral plan file
-2. **Verify plan contains hierarchical task structure (1, 1.1, 1.2, 2, etc.)**
-3. **Parse task dependency chain** - identify execution order
-4. **Extract isolated contexts** - separate what each agent needs to know
-5. Review critically - identify any questions about task dependencies or isolation
-6. **Confirm each task has clear behavioral specifications and interface contracts**
-7. If concerns: Raise them with your human partner before starting
-8. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
-9. If no concerns: Create TodoWrite with hierarchical task list and proceed
+1. **Check plan structure** - Look for either:
+   - Single plan file: `docs/plans/YYYY-MM-DD-<name>.md` (legacy)
+   - Multi-file plan: `docs/plans/YYYY-MM-DD-<name>/plan.md` (preferred)
+2. **If multi-file plan:**
+   - Read `plan.md` for orchestration overview and execution order
+   - Identify all task files (`task1.md`, `task2.md`) and subtask files (variable quantity based on plan complexity)
+   - Parse dependency chain from task overview
+3. **If single plan file:** Parse hierarchical structure from single file
+4. **Verify plan contains hierarchical task structure (main tasks and subtasks as determined by complexity)**
+5. **Parse task dependency chain** - identify execution order
+6. **Extract isolated contexts** - separate what each agent needs to know
+7. Review critically - identify any questions about task dependencies or isolation
+8. **Confirm each task has clear behavioral specifications and interface contracts**
+9. If concerns: Raise them with your human partner before starting
+10. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
+11. If no concerns: Create TodoWrite with hierarchical task list and proceed
 
 ### Step 3: Implement the plan in the target repo
 - Create or update files directly under `/target/src/...`
@@ -67,16 +74,22 @@ Example:
 ```
 
 ### Step 4: Execute Tasks with Isolated Agents
-**Execute tasks in dependency order (1, 1.1, 1.2, then 2, 2.1, etc.)**
+**Execute tasks in dependency order (based on plan's actual task structure)**
 
 For each task in execution order:
 1. **Mark task as in_progress**
-2. **Extract isolated context** for this specific task number
-3. **Dispatch dedicated agent** with ONLY the context for this task:
+2. **Load task-specific file** (main task or subtask file as determined by plan structure)
+3. **Extract isolated context** from individual task file
+4. **Dispatch dedicated agent** with ONLY the context for this task:
 
 ```bash
-# Dispatch task-specific agent
+# Load and dispatch task-specific agent
+1. Read content from appropriate task file (determined by execution order from plan)
+2. Extract all task-specific context from the file
+3. Dispatch agent with isolated context:
+
 Task agent for Task X.Y:
+  task_file_content: [Full content from taskX.Y.md]
   context: |
     You are implementing Task X.Y from the hierarchical plan.
     
@@ -128,7 +141,7 @@ git -C /target status
 
 ### Step 6: Report Hierarchical Progress
 When batch complete:
-- **Show task hierarchy status:** Which tasks completed (1 ✅, 1.1 ✅, 1.2 🔄, 2 ⏳)
+- **Show task hierarchy status:** Which tasks completed (based on actual plan structure)
 - **Report agent isolation:** Each task agent worked with isolated context
 - **Show interface contracts:** What each completed task provides to dependents
 - **Report TDD compliance:** All task agents followed Test-Driven Development
