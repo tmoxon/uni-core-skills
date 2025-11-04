@@ -1,61 +1,81 @@
 ---
 name: Subagent-Driven Development
-description: Execute implementation plan by dispatching fresh subagent for each task, with code review between tasks
-when_to_use: when executing implementation plans with independent tasks in the current session, using fresh subagents with review gates
-version: 1.1.0
+description: Execute behavioral plans using TDD-focused subagents for each task, with code review verifying TDD compliance
+when_to_use: when executing behavioral implementation plans with independent tasks in the current session, enforcing Test-Driven Development
+version: 2.0.0
 ---
 
 # Subagent-Driven Development
 
-Execute plan by dispatching fresh subagent per task, with code review after each.
+Execute behavioral plans by dispatching TDD-focused subagent per task, with code review verifying TDD compliance after each.
 
-**Core principle:** Fresh subagent per task + review between tasks = high quality, fast iteration
+**Core principle:** Fresh TDD-compliant subagent per task + TDD compliance review = high quality, test-driven iteration
 
 ## Overview
 
 **vs. Executing Plans (parallel session):**
 - Same session (no context switch)
-- Fresh subagent per task (no context pollution)
-- Code review after each task (catch issues early)
-- Faster iteration (no human-in-loop between tasks)
+- Fresh TDD-focused subagent per task (no context pollution)
+- TDD compliance review after each task (catch violations early)
+- Faster iteration with test-driven quality assurance
 
 **When to use:**
-- Staying in this session
-- Tasks are mostly independent
-- Want continuous progress with quality gates
+- Staying in this session  
+- Hierarchical plan exists with task numbers (1, 1.1, 1.2, 2, etc.)
+- Want agent isolation per task with TDD compliance
+- Tasks have clear dependency chains and interface contracts
+- Behavioral specifications exist (not concrete code plan)
 
 **When NOT to use:**
-- Need to review plan first (use executing-plans)
-- Tasks are tightly coupled (manual execution better)
-- Plan needs revision (brainstorm first)
+- Plan lacks hierarchical task structure (rewrite with @collaboration/writing-plans first)
+- Plan contains concrete code instead of behavioral specs
+- Task dependencies are unclear or circular
+- Plan needs behavioral revision (brainstorm first)
 
 ## The Process
 
-### 1. Load Plan
+### 1. Load Hierarchical Plan
 
-Read plan file, create TodoWrite with all tasks.
+Read plan file, parse task hierarchy (1, 1.1, 1.2, 2, etc.), create TodoWrite with dependency-ordered execution.
 
 ### 2. Execute Task with Subagent
 
 For each task:
 
-**Dispatch fresh subagent:**
+**Dispatch task-isolated subagent:**
 ```
-Task tool (general-purpose):
-  description: "Implement Task N: [task name]"
+Task tool (task-isolated):
+  description: "Implement Task X.Y: [specific task name] with isolated context and TDD"
   prompt: |
-    You are implementing Task N from [plan-file].
-
-    Read that task carefully. Your job is to:
-    1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
-    4. Commit your work
-    5. Report back
-
+    You are implementing ONLY Task X.Y from a hierarchical plan using STRICT Test-Driven Development.
+    
+    ISOLATED CONTEXT - You only see:
+    ================================
+    TASK NUMBER: X.Y
+    BEHAVIOR: [Only this task's behavioral requirement]
+    ACCEPTANCE CRITERIA: [Only this task's criteria] 
+    FILES TO CREATE: [Only files for this task]
+    DEPENDENCIES AVAILABLE: [Interfaces from completed tasks]
+    INTERFACE TO PROVIDE: [What you must expose for future tasks]
+    
+    MANDATORY: Use skills/testing/test-driven-development/SKILL.md
+    
+    RESTRICTIONS - You do NOT have access to:
+    ========================================
+    - Other task details from the plan
+    - Full system architecture beyond your scope  
+    - Implementation details of other tasks
+    - The complete plan structure
+    
+    Your job using TDD:
+    1. **Follow Red-Green-Refactor for each acceptance criteria**
+    2. **Create interface contracts** for dependent tasks
+    3. **Verify all acceptance criteria** with passing tests
+    4. Commit after each TDD cycle
+    
     Work from: [directory]
-
-    Report: What you implemented, what you tested, test results, files changed, any issues
+    
+    Report: Task X.Y complete, interface contracts defined, TDD cycles completed, tests passing
 ```
 
 **Subagent reports back** with summary of work.
@@ -67,23 +87,27 @@ Task tool (general-purpose):
 Task tool (code-reviewer):
   Use template at skills/collaboration/requesting-code-review/code-reviewer.md
 
-  WHAT_WAS_IMPLEMENTED: [from subagent's report]
-  PLAN_OR_REQUIREMENTS: Task N from [plan-file]
+  WHAT_WAS_IMPLEMENTED: [from isolated subagent's report]
+  PLAN_OR_REQUIREMENTS: Task X.Y isolated requirements only
   BASE_SHA: [commit before task]
   HEAD_SHA: [current commit]
-  DESCRIPTION: [task summary]
+  DESCRIPTION: [task X.Y summary]
+  TDD_COMPLIANCE: Verify Red-Green-Refactor cycles, tests first, acceptance criteria covered
+  INTERFACE_CONTRACTS: Verify interfaces defined for dependent tasks
+  ISOLATION_COMPLIANCE: Verify agent only implemented assigned task scope
 ```
 
-**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), Assessment
+**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), TDD Compliance, Interface Contract Verification
 
 ### 4. Apply Review Feedback
 
 **If issues found:**
-- Fix Critical issues immediately
+- Fix Critical issues immediately (including TDD violations)
 - Fix Important issues before next task
+- **TDD Compliance Issues:** Must be fixed immediately - no exceptions
 - Note Minor issues
 
-**Dispatch follow-up subagent if needed:**
+**Dispatch follow-up subagent if needed (must follow TDD):**
 ```
 "Fix issues from code review: [list issues]"
 ```

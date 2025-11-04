@@ -9,24 +9,36 @@ version: 2.1.0
 
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Write comprehensive implementation plans focused on **behavioral specifications** and **abstract syntax** rather than concrete code. Define WHAT needs to be implemented through clear test scenarios, expected behaviors, and architectural patterns. The implementation will follow strict TDD methodology during execution.
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+Plans should specify **desired behaviors**, **test scenarios**, **architectural constraints**, and **integration points** - but NOT the specific implementation code.
+
+Assume the implementing engineer will follow Test-Driven Development and needs clear behavioral requirements to write meaningful tests.
 
 **Announce at start:** "I'm using the Writing Plans skill to create the implementation plan."
 
-**Context:** This should be run in a dedicated worktree (created by brainstorming skill).
+**Context:** This should be run in the `/target` repository (set up by brainstorming skill).
 
 **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
-## Bite-Sized Task Granularity
+## Hierarchical Task Granularity
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
+**Main Tasks (1, 2, 3...):** High-level features or components (1-4 hours total)
+- Represent complete user-facing features or architectural components
+- Have clear dependencies on other main tasks
+- Break down into focused subtasks
+
+**Subtasks (1.1, 1.2, 1.3...):** Isolated behavioral units (15-45 minutes including TDD)
+- Single behavioral responsibility 
+- Isolated context - agent only sees this subtask
+- Clear acceptance criteria and test scenarios
+- Well-defined interfaces for task dependencies
+
+**Agent Isolation Principle:**
+- Each task number = one dedicated agent
+- Agent gets only the context for their specific task
+- No access to full plan or other task details
+- Must define interfaces for other tasks to consume
 
 ## Plan Document Header
 
@@ -35,7 +47,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For Claude:** Use `${UNI_SKILLS_ROOT}/skills/collaboration/executing-plans/SKILL.md` to implement this plan task-by-task.
+> **For Claude:** Use `${UNI_SKILLS_ROOT}/skills/collaboration/executing-plans/SKILL.md` to implement this plan task-by-task with hierarchical agent isolation.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -43,76 +55,117 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Tech Stack:** [Key technologies/libraries]
 
+**Task Execution Model:** Each task number (1, 1.1, 1.2, 2, etc.) will be assigned to a dedicated agent with isolated context.
+
 ---
 ```
 
-## Task Structure
+## Task Hierarchy Planning
+
+**Before writing tasks, create the hierarchy:**
+
+1. **Identify main features/components** → Main tasks (1, 2, 3...)
+2. **Break down into isolated behaviors** → Subtasks (1.1, 1.2, 1.3...)  
+3. **Define dependency chains** → Which tasks need outputs from which other tasks
+4. **Design interfaces** → How tasks communicate results to dependent tasks
+
+**Dependency Rules:**
+- Subtasks within a main task can depend on each other (1.1 → 1.2)
+- Main tasks can depend on other main tasks (Task 2 depends on Task 1)
+- No circular dependencies allowed
+- Each task defines clear interface contracts
+
+## Hierarchical Task Structure
+
+Create a numbered hierarchy with main tasks (1, 2, 3) and subtasks (1.1, 1.2, 2.1, etc.):
 
 ```markdown
-### Task N: [Component Name]
+## Task 1: [Main Feature/Component Name]
 
-**Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+**High-Level Behavior:** Overall goal of this main task
 
-**Step 1: Write the failing test**
+**Depends On:** [Other main tasks this requires: Task 2, Task 3]
+**Provides To:** [Other main tasks that need this: Task 4, Task 5]
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+### Task 1.1: [Specific Sub-Behavior]
+
+**Agent Context:** Everything this agent needs to know, isolated from other tasks
+
+**Behavior:** Specific, focused behavior this subtask accomplishes
+
+**Acceptance Criteria:**
+- Given [context/input]
+- When [action occurs] 
+- Then [expected outcome]
+- And [additional constraints]
+
+**Test Scenarios:**
+- Happy path: [normal case description]
+- Edge cases: [boundary conditions, empty inputs, null values]
+- Error cases: [invalid inputs, system failures]
+
+**Agent-Specific Context:**
+- Files to create: `exact/path/to/file.py`
+- Tests to create: `tests/exact/path/to/test.py`
+- Dependencies available: [interfaces from completed tasks]
+- Interfaces to provide: [what other tasks will consume]
+
+**Architecture Constraints:**
+- Design patterns: [specific to this subtask]
+- Performance requirements: [specific constraints]
+- Security considerations: [validation, auth for this subtask]
+
+**Definition of Done:**
+- All acceptance criteria have passing tests
+- Interfaces defined for dependent tasks
+- Code follows project conventions
+- Agent reports completion with interface contracts
+
+### Task 1.2: [Another Sub-Behavior]
+
+[Same structure as 1.1, isolated context]
+
+## Task 2: [Next Main Feature/Component]
+
+[Same structure as Task 1]
 ```
 
-**Step 2: Run test to verify it fails**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-**Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
-```
-
-**Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-**Step 5: Commit**
-
-```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
-```
-```
+**Key Principles:**
+- Each task number gets a dedicated agent
+- Each agent gets ONLY the context they need
+- No agent sees the full plan - only their task scope
+- Clear dependency chains between tasks
 
 ## Remember
-- Exact file paths always
-- Complete code in plan (not "add validation")
-- Exact commands with expected output
-- Reference relevant skills with @ syntax
-- DRY, YAGNI, TDD, frequent commits
+
+- **Behavior-focused:** Describe WHAT, not HOW
+- **Test scenarios:** Clear inputs/outputs for TDD implementation
+- **Exact file paths:** Where implementation and tests should go
+- **Architectural constraints:** Design patterns, performance, security
+- **Integration points:** Dependencies and interfaces
+- **No concrete code:** Let TDD drive the implementation
+- **Reference relevant skills:** Use @ syntax for skills like @testing/test-driven-development
 
 ## Execution Handoff
 
 After saving the plan, offer execution choice:
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**"Hierarchical behavioral plan complete and saved to `docs/plans/<filename>.md`. Each task number will get a dedicated agent with isolated context. Implementation will follow strict Test-Driven Development. Two execution options:**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+**1. Subagent-Driven (this session)** - I dispatch isolated TDD-focused agent per task number, ensure hierarchical execution with dependency management
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+**2. Parallel Session (separate)** - Open new session with executing-plans skill, enforces hierarchical TDD methodology with agent isolation
 
 **Which approach?"**
 
 **If Subagent-Driven chosen:**
 - Use skills/collaboration/subagent-driven-development
 - Stay in this session
-- Fresh subagent per task + code review
+- Each task agent gets ONLY their isolated context
+- Each agent MUST follow @testing/test-driven-development
+- Code review includes TDD compliance and interface contract verification
 
 **If Parallel Session chosen:**
-- Guide them to open new session in worktree
+- Guide them to work in the `/target` repository  
 - New session uses skills/collaboration/executing-plans
+- Executing-plans will dispatch isolated agents per task with TDD enforcement
