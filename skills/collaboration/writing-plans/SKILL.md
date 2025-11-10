@@ -208,11 +208,35 @@ Brief description of each main task and execution order:
 - **No concrete code:** Let TDD drive the implementation
 - **Reference relevant skills:** Use @ syntax for skills like @testing/test-driven-development
 
+## Commit the Plan
+
+**CRITICAL: Commit plan files to git BEFORE starting execution.**
+
+After saving all plan files:
+
+```bash
+cd /target
+git add docs/plans/<folder-name>/
+git commit -m "docs: Add implementation plan for <feature-name>"
+```
+
+**Why this matters:**
+- The plan is valuable documentation showing design decisions
+- It should be versioned alongside the implementation for code review
+- It provides context for why the code was structured a certain way
+- It's a deliverable artifact, not just a working document
+
+**Verify commit:**
+```bash
+git log -1 --oneline
+git status
+```
+
 ## Execution Handoff
 
-After saving all plan files, offer execution choice:
+After saving and committing all plan files, offer execution choice:
 
-**"Hierarchical behavioral plan complete and saved to `docs/plans/<folder-name>/` with:**
+**"Hierarchical behavioral plan complete, saved to `docs/plans/<folder-name>/`, and committed to git with:**
 - **`plan.md`** - Main orchestration file
 - **`task1.md`, `task2.md`** - Individual task files  
 - **Subtask files** - Individual files for each subtask (quantity determined by complexity)

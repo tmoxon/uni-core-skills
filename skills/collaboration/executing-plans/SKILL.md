@@ -41,23 +41,34 @@ Load behavioral plan, analyze dependency graph, execute independent tasks in par
 1. **Check plan structure** - Look for either:
    - Single plan file: `docs/plans/YYYY-MM-DD-<name>.md` (legacy)
    - Multi-file plan: `docs/plans/YYYY-MM-DD-<name>/plan.md` (preferred)
-2. **If multi-file plan:**
+2. **Verify plan is committed to git:**
+   ```bash
+   cd /target
+   git status docs/plans/
+   ```
+   - **If plan files show as untracked or modified:** 
+     - **STOP execution immediately**
+     - Tell partner: "⚠️ The implementation plan in `docs/plans/<folder-name>/` is not committed to git. Please commit it first using: `git add docs/plans/<folder-name>/ && git commit -m 'docs: Add implementation plan for <feature-name>'`"
+     - **Wait for partner to commit before proceeding**
+   - **If plan is committed:** Proceed to next step
+3. **If multi-file plan:**
    - Read `plan.md` for orchestration overview and execution order
    - Identify all task files (`task1.md`, `task2.md`) and subtask files (variable quantity based on plan complexity)
    - Parse dependency chain from task overview
-3. **If single plan file:** Parse hierarchical structure from single file
-4. **Verify plan contains hierarchical task structure (main tasks and subtasks as determined by complexity)**
-5. **Build dependency graph** - map which tasks depend on which other tasks
-6. **Identify parallel execution opportunities:**
+4. **If single plan file:** Parse hierarchical structure from single file
+5. **Verify plan contains hierarchical task structure (main tasks and subtasks as determined by complexity)**
+6. **Build dependency graph** - map which tasks depend on which other tasks
+7. **Identify parallel execution opportunities:**
+7. **Identify parallel execution opportunities:**
    - **Independent main tasks:** Tasks with no dependencies between them (Task 1, Task 3 both independent)
    - **Independent subtask clusters:** Subtasks within a main task that can run concurrently
    - **Sequential chains:** Tasks that must run in order due to dependencies
-7. **Extract isolated contexts** - separate what each agent needs to know
-8. Review critically - identify any questions about task dependencies or isolation
-9. **Confirm each task has clear behavioral specifications and interface contracts**
-10. If concerns: Raise them with your human partner before starting
-11. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
-12. If no concerns: Create TodoWrite with hierarchical task list and parallel execution strategy
+8. **Extract isolated contexts** - separate what each agent needs to know
+9. Review critically - identify any questions about task dependencies or isolation
+10. **Confirm each task has clear behavioral specifications and interface contracts**
+11. If concerns: Raise them with your human partner before starting
+12. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
+13. If no concerns: Create TodoWrite with hierarchical task list and parallel execution strategy
 
 ### Step 3: Implement the plan in the target repo
 - Create or update files directly under `/target/src/...`
