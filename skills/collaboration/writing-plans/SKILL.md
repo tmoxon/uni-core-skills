@@ -21,6 +21,14 @@ Assume the implementing engineer will follow Test-Driven Development and needs c
 
 **Context:** This should be run in the `/target` repository (set up by brainstorming skill).
 
+**ADR Check:** Before creating the plan, verify if ADRs exist for significant architectural decisions:
+- Check `docs/adr/` for recent ADRs related to this work
+- If design includes significant architectural decisions but no ADRs exist:
+  - **STOP** and announce: "This design has significant architectural decisions that need ADRs first."
+  - Recommend using skills/collaboration/create-adr before continuing
+  - Wait for ADRs to be created and committed
+- If ADRs exist or are not needed, proceed with planning
+
 **Plan Organization:** Create folder structure `docs/plans/YYYY-MM-DD-<feature-name>/`
 - `plan.md` - Main orchestration file with task overview and execution order
 - `task1.md`, `task2.md`, etc. - Individual task files for each main task
@@ -210,21 +218,29 @@ Brief description of each main task and execution order:
 
 ## Commit the Plan
 
-**CRITICAL: Commit plan files to git BEFORE starting execution.**
+**CRITICAL: Commit plan files (and any ADRs) to git BEFORE starting execution.**
 
 After saving all plan files:
 
 ```bash
 cd /target
+
+# Add any ADRs if they were created during brainstorming
+git add docs/adr/ 2>/dev/null || true
+
+# Add the plan files
 git add docs/plans/<folder-name>/
+
+# Commit everything together
 git commit -m "docs: Add implementation plan for <feature-name>"
 ```
 
 **Why this matters:**
 - The plan is valuable documentation showing design decisions
-- It should be versioned alongside the implementation for code review
-- It provides context for why the code was structured a certain way
-- It's a deliverable artifact, not just a working document
+- ADRs provide architectural context for the implementation
+- Both should be versioned alongside the implementation for code review
+- They provide context for why the code was structured a certain way
+- They are deliverable artifacts, not just working documents
 
 **Verify commit:**
 ```bash
