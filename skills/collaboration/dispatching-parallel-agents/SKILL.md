@@ -85,9 +85,11 @@ When agents return:
 
 ## Agent Prompt Structure
 
+**Use @collaboration/token-optimized-dispatch pattern for minimal context.**
+
 Good agent prompts are:
 1. **Focused** - One clear problem domain
-2. **Self-contained** - All context needed to understand the problem
+2. **Essential context** - Goal, constraints, acceptance criteria (agent can ask for more)
 3. **Specific about output** - What should the agent return?
 
 ```markdown
