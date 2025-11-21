@@ -33,6 +33,14 @@ Transform rough ideas into fully-formed designs through structured questioning a
 - Cover: Architecture, components, data flow, error handling, testing
 - Ask after each section: "Does this look right so far?"
 
+**When covering testing approach:**
+- Search for relevant testing skills based on design context:
+  - UI components/visual changes: `find-skills "UI|visual|component|storybook"`
+  - API/integration: `find-skills "api|integration"`
+  - Specific technologies: `find-skills "<tech-name>"`
+- If relevant testing skills found, incorporate them into testing strategy
+- Mention discovered skills: "For testing, we can use [skill-name] to [capability]"
+
 ### Phase 3.5: ADR Evaluation (when design is approved)
 When design is validated and approved, evaluate if an ADR is needed:
 
