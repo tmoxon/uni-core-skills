@@ -109,6 +109,133 @@ playwright_evaluate({
 })
 ```
 
+### 5. Multi-Browser Testing
+
+When verifying cross-browser compatibility, test systematically across browsers:
+
+**Browser Testing Protocol:**
+
+1. **Check MCP Capabilities First**
+   - Verify if MCP server supports browser selection
+   - Check available browsers: Chromium, Firefox, WebKit
+   - If limited to single browser, document this limitation clearly
+
+2. **Test Across All Available Browsers**
+   ```typescript
+   // If MCP supports browser selection (check server docs)
+   const browsers = ['chromium', 'firefox', 'webkit'];
+   
+   for (const browser of browsers) {
+     // Navigate with browser-specific context
+     await playwright_navigate({
+       url: "http://localhost:6006/?path=/story/button--primary",
+       browser: browser  // If supported by MCP
+     });
+     
+     await playwright_screenshot({
+       name: `button-primary-${browser}`,
+       fullPage: false
+     });
+   }
+   ```
+
+3. **Compare Cross-Browser Results**
+   - Review screenshots side-by-side
+   - Document browser-specific rendering differences
+   - Note any browser-specific bugs or inconsistencies
+
+4. **Fallback Strategy**
+   - If MCP only supports single browser: Test in primary browser (Chromium)
+   - Compare against existing multi-browser snapshots if available
+   - Clearly state testing limitations in report
+   - Suggest running full test suite with native Playwright for complete coverage
+
+### 6. Comprehensive Visual Verification
+
+When verifying components, systematically check ALL visual properties:
+
+**Visual Property Checklist:**
+
+- **Colors**
+  - Foreground/text colors
+  - Background colors
+  - Border colors
+  - Shadow colors
+  - Gradient stops
+
+- **Typography**
+  - Font family
+  - Font size
+  - Font weight
+  - Line height
+  - Text alignment
+  - Letter spacing
+
+- **Spacing**
+  - Padding (all sides)
+  - Margin (all sides)
+  - Gap between elements
+  - Internal spacing in composite components
+
+- **Sizing**
+  - Width
+  - Height
+  - Min/max constraints
+  - Size variations (small, medium, large)
+
+- **Shapes**
+  - Border radius
+  - Border width
+  - Border style
+  - Outline properties
+
+- **Effects**
+  - Box shadows
+  - Text shadows
+  - Opacity
+  - Transitions
+  - Animations
+
+- **States**
+  - Default/idle
+  - Hover
+  - Focus
+  - Active/pressed
+  - Disabled
+  - Loading
+  - Error
+
+- **Icons**
+  - Size
+  - Alignment
+  - Spacing from text
+  - Rendering quality
+  - Color consistency
+
+- **Layout**
+  - Flexbox/grid alignment
+  - Positioning (relative, absolute, fixed)
+  - Z-index stacking
+  - Overflow behavior
+
+**Use `playwright_evaluate` to extract computed styles:**
+```typescript
+playwright_evaluate({
+  expression: `() => {
+    const el = document.querySelector('[data-testid="button"]');
+    const styles = window.getComputedStyle(el);
+    return {
+      color: styles.color,
+      backgroundColor: styles.backgroundColor,
+      padding: styles.padding,
+      fontSize: styles.fontSize,
+      fontWeight: styles.fontWeight,
+      borderRadius: styles.borderRadius
+    };
+  }`
+})
+```
+
 ## MCP Tools Reference
 
 ### playwright_navigate
@@ -180,6 +307,112 @@ Execute JavaScript in browser context.
 playwright_evaluate({
   expression: "() => document.querySelector('.theme-toggle').click()"
 })
+```
+
+## Systematic Testing Workflow
+
+When testing components comprehensively, follow this structured approach:
+
+### Step 1: Identify Test Scope
+
+1. List all component stories/variants to test
+2. Identify which browsers to test (if multi-browser supported)
+3. Determine which visual properties are critical
+4. Check for existing baseline snapshots:
+   - `test/snapshots/`, `__snapshots__/`, `.playwright/snapshots/`
+   - Look for browser-specific: `*-chromium.png`, `*-firefox.png`, `*-webkit.png`
+
+### Step 2: Create Todo List
+
+Use manage_todo_list to track testing progress:
+
+```
+1. Test Button component - Chromium
+2. Test Button component - Firefox
+3. Test Button component - WebKit
+4. Test Card component - Chromium
+5. Test Card component - Firefox
+6. Test Card component - WebKit
+7. Cross-browser comparison
+8. Generate test report
+```
+
+### Step 3: Test Each Browser (if supported)
+
+For EACH browser:
+1. Launch browser context (if MCP supports)
+2. Navigate to each story
+3. Capture screenshot
+4. Compare against baseline (if exists)
+5. Verify visual properties using checklist
+6. Document any differences
+7. Update todo as complete
+
+### Step 4: Cross-Browser Comparison
+
+1. Compare screenshots between browsers
+2. Identify browser-specific rendering issues
+3. Document consistency/inconsistencies
+4. Note any browser-specific bugs
+
+### Step 5: Generate Comprehensive Report
+
+Provide structured findings using the reporting format below.
+
+## Testing Report Format
+
+Always provide a comprehensive report after testing:
+
+```markdown
+## Testing Summary
+- **Browsers Tested**: [Chromium / Firefox / WebKit / Chromium only (MCP limitation)]
+- **Testing Method**: [Live MCP testing / Snapshot comparison / Both]
+- **Stories Verified**: [Count and list]
+- **Baseline Snapshots**: [Found / Not found / Partially available]
+
+## Visual Properties Verified
+- **Colors**: ✓/✗ [Details: foreground, background, borders, shadows]
+- **Typography**: ✓/✗ [Details: font-size, weight, line-height, alignment]
+- **Spacing**: ✓/✗ [Details: padding, margin, gaps]
+- **Sizing**: ✓/✗ [Details: width, height, size variants]
+- **Shapes**: ✓/✗ [Details: border-radius, borders, outlines]
+- **Effects**: ✓/✗ [Details: shadows, opacity, transitions]
+- **States**: ✓/✗ [Details: hover, focus, active, disabled, loading]
+- **Icons**: ✓/✗ [Details: size, alignment, rendering]
+- **Layout**: ✓/✗ [Details: flexbox/grid, positioning]
+
+## Cross-Browser Consistency
+- **Chromium vs Firefox**: [Findings or "Not tested"]
+- **Chromium vs WebKit**: [Findings or "Not tested"]
+- **Firefox vs WebKit**: [Findings or "Not tested"]
+
+## Issues Found
+[List specific issues with severity and affected browsers]
+
+1. [Issue description] - [Browser(s)] - [Severity: Critical/High/Medium/Low]
+2. [Issue description] - [Browser(s)] - [Severity: Critical/High/Medium/Low]
+
+## Baseline Comparisons
+[If snapshots exist]
+- **Matches baseline**: [List components]
+- **Differs from baseline**: [List components with description of differences]
+- **New components (no baseline)**: [List components]
+
+## Testing Limitations
+[Be transparent about what couldn't be tested]
+
+- MCP server only supports Chromium - Firefox/WebKit not tested
+- Specific property X could not be verified due to [reason]
+- Animation testing limited to static frames
+- [Any other limitations]
+
+## Recommendations
+[Actionable next steps]
+
+- Update snapshots for intentional changes
+- Fix issues found in [component names]
+- Run full Playwright test suite for complete multi-browser coverage
+- Add missing test coverage for [scenarios]
 ```
 
 ## Integration Guidance
