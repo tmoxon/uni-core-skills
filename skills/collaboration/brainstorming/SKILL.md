@@ -40,6 +40,9 @@ Transform rough ideas into fully-formed designs through structured questioning a
   - Specific technologies: `find-skills "<tech-name>"`
 - If relevant testing skills found, incorporate them into testing strategy
 - Mention discovered skills: "For testing, we can use [skill-name] to [capability]"
+- **For UI component work:** Set expectation of iterative development:
+  - "Visual testing is iterative - we'll implement, test, refine, and re-test until no regressions"
+  - "Plan for multiple test cycles as CSS changes have cascading effects"
 
 ### Phase 3.5: ADR Evaluation (when design is approved)
 When design is validated and approved, evaluate if an ADR is needed:

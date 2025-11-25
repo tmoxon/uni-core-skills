@@ -141,6 +141,13 @@ Task agent for Task X:
     
     MANDATORY: Use skills/testing/test-driven-development/SKILL.md
     
+    FOR UI COMPONENT TASKS:
+    - Use skills/testing/playwright-mcp-testing/SKILL.md for visual verification
+    - Follow iterative cycle: Implement → Test → Refine → Re-test
+    - Expect multiple iterations until no visual regressions
+    - Do NOT update snapshots to make tests pass - fix the code instead
+    - Only update snapshots when intentional design changes are verified correct
+    
     You do NOT have access to:
     - Other task details from the plan
     - Full system architecture beyond your scope
@@ -206,6 +213,10 @@ When parallel batch complete:
 - **Report agent isolation:** Each task agent worked with isolated context without interference
 - **Show interface contracts:** What each completed task provides to dependents
 - **Report TDD compliance:** All task agents followed Test-Driven Development
+- **For UI component tasks:** Report iteration count and final state:
+  - Number of implementation → test → refine cycles performed
+  - Final visual test status (passing / snapshots updated with reason)
+  - Any remaining visual issues or cross-browser concerns
 - **Integration verification:** All parallel implementations work together, no conflicts
 - Show test results: All task tests passing, interface contracts verified, integration tests green
 - **Next tasks ready:** Which tasks can now proceed (dependencies satisfied)

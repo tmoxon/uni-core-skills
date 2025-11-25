@@ -14,6 +14,8 @@ Use the Playwright MCP (Model Context Protocol) server to automate UI testing wi
 
 **Core principle:** Automate visual testing and component interaction through MCP tools rather than manual Storybook navigation.
 
+**Development cycle:** Implement → Test → Refine → Re-test iteratively until no regressions.
+
 ## When to Use
 
 **Primary use cases:**
@@ -49,38 +51,125 @@ npm run test:storybook:visual -- ComponentName
 - Compares against baseline snapshots
 - Reports differences
 
-### 2. Verifying Component Changes
+### 2. Iterative Development with Visual Testing
 
-After modifying a component, verify all its states:
+**The core workflow for UI component development:**
 
-**Step 1:** Use MCP to navigate to component story
+UI development is inherently iterative. Expect to cycle through implementation → testing → refinement multiple times.
+
+#### Iteration Cycle
+
+**Step 1: Make Initial Changes**
+- Implement component changes (styles, props, behavior)
+- Review changes in Storybook manually
+- Verify basic functionality works
+
+**Step 2: Run Visual Tests**
+```bash
+npm run test:storybook:visual -- ComponentName
+```
+
+Or use MCP directly:
 ```typescript
 playwright_navigate({
   url: "http://localhost:6006/?path=/story/components-button--primary"
 })
-```
 
-**Step 2:** Capture current state
-```typescript
 playwright_screenshot({
   name: "button-primary-current",
   fullPage: false
 })
 ```
 
-**Step 3:** Interact with component to test states
+**Step 3: Analyze Results**
+
+Three possible outcomes:
+
+**A. No regressions detected** ✓
+- All visual tests pass
+- Screenshots match baselines
+- **Action:** Proceed to next component or complete work
+
+**B. Intentional changes detected** ⚠️
+- Tests fail because design intentionally changed
+- Differences are expected and correct
+- **Action:** Review diff images, update snapshots if correct:
+  ```bash
+  npm run test:storybook:visual -- ComponentName --update-snapshots
+  ```
+- **Important:** Commit updated snapshots with clear message explaining design change
+
+**C. Unintentional regressions detected** ❌
+- Tests fail due to bugs or side effects
+- Visual differences are NOT intended
+- **Action:** Proceed to Step 4
+
+**Step 4: Refine Implementation**
+- Analyze what caused the regression
+- Identify specific styles/properties that need adjustment
+- Make targeted fixes to component code
+- **Do not update snapshots yet** - fix the code instead
+
+**Step 5: Re-test**
+- Run visual tests again
+- Compare new results against baseline
+- **If regressions remain:** Return to Step 4
+- **If regressions resolved:** Tests should now pass
+
+**Step 6: Verify All States**
+
+Once base case passes, verify component states systematically:
+
 ```typescript
-playwright_click({
-  selector: "button[data-testid='primary-button']"
+// Test hover state
+playwright_hover({
+  selector: "[data-testid='button']"
+})
+playwright_screenshot({
+  name: "button-primary-hover",
+  fullPage: false
+})
+
+// Test focus state
+playwright_focus({
+  selector: "[data-testid='button']"
+})
+playwright_screenshot({
+  name: "button-primary-focus",
+  fullPage: false
+})
+
+// Test disabled state
+playwright_navigate({
+  url: "http://localhost:6006/?path=/story/components-button--disabled"
+})
+playwright_screenshot({
+  name: "button-disabled",
+  fullPage: false
 })
 ```
 
-**Step 4:** Capture after interaction
-```typescript
-playwright_screenshot({
-  name: "button-primary-clicked",
-  fullPage: false
-})
+**If any state shows regression:** Return to Step 4 and refine
+
+#### Iteration Mindset
+
+**Expect multiple iterations:**
+- First attempt rarely perfect
+- CSS changes have cascading effects
+- Different states may reveal new issues
+- Cross-browser differences emerge
+
+**Good practice:**
+- Test frequently during development (after each logical change)
+- Keep iterations small (fix one issue at a time)
+- Document unexpected regressions for learning
+- Don't update snapshots just to make tests pass - fix the code
+
+**Red flags:**
+- Updating snapshots without reviewing diffs
+- Skipping re-testing after fixes
+- Making multiple changes before testing
+- Assuming first implementation is correct
 ```
 
 ### 3. Generating New Tests
