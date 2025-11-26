@@ -756,11 +756,11 @@ When refactoring UI components (e.g., migrating styling approaches, updating com
 
 ### The Systematic Refactoring Workflow
 
-**Critical principle:** Visual inspection misses things. Use tools to verify completeness.
+**Critical principle:** Manual code review misses things. Use automated tools to verify completeness.
 
 #### Step 1: Identify All Occurrences
 
-**Don't rely on reading code.** Use systematic searches:
+**Don't rely on manually reading through code.** Use systematic searches:
 
 ```bash
 # Search for all occurrences of pattern to replace
@@ -941,7 +941,7 @@ for (const variant of variants) {
 
 Use this checklist for every refactoring task:
 
-- [ ] Used grep/search to find ALL occurrences (not visual inspection)
+- [ ] Used grep/search to find ALL occurrences (not manual code review)
 - [ ] Checked conditional JSX (loading, error, edge cases)
 - [ ] Created complete replacement plan listing every occurrence
 - [ ] Implemented replacements systematically (one by one)
@@ -959,7 +959,7 @@ Use this checklist for every refactoring task:
 
 ### Common Refactoring Mistakes
 
-❌ **Visual inspection only** - Missing occurrences in conditional code
+❌ **Manual code review only** - Missing occurrences in conditional code
 ❌ **Incomplete search** - Not checking all file types or patterns
 ❌ **Assuming similarity** - "This is the same as the last one" (it's not)
 ❌ **Updating snapshots** - Making tests pass instead of fixing code
