@@ -18,7 +18,25 @@ Transform rough ideas into fully-formed designs through structured questioning a
 ## The Process
 
 ### Phase 1: Understanding
-- Check current project state in working directory
+
+**Before asking questions, understand the project context:**
+
+1. **Read project documentation** (if working in target repository):
+   - Read `/target/claude.md` if it exists (project conventions, patterns, common pitfalls)
+   - Read `README.md` for project overview
+   - Check `CONTRIBUTING.md` for development guidelines
+   
+2. **Understand current codebase state:**
+   - List directory structure to understand project organization
+   - Check `package.json` / `tsconfig.json` for tech stack
+   - Note any obvious patterns or architectural decisions
+
+3. **Incorporate project context into questions:**
+   - Reference existing patterns when asking about approach
+   - Ask about deviations from established conventions
+   - Consider documented pitfalls when exploring options
+
+**Then proceed with interactive refinement:**
 - Ask ONE question at a time to refine the idea
 - Prefer multiple choice when possible
 - Gather: Purpose, constraints, success criteria
