@@ -743,6 +743,241 @@ playwright_click({
 })
 ```
 
+## Systematic Refactoring with Visual Testing
+
+When refactoring UI components (e.g., migrating styling approaches, updating component structure), visual testing ensures you haven't introduced regressions. Follow a systematic approach to guarantee completeness.
+
+### Common Refactoring Scenarios
+
+- Migrating styling systems (CSS-in-JS → CSS Modules, Tailwind → custom CSS)
+- Updating component APIs (prop changes, composition patterns)
+- Replacing UI libraries (switching icon libraries, design systems)
+- Restructuring component hierarchies
+
+### The Systematic Refactoring Workflow
+
+**Critical principle:** Visual inspection misses things. Use tools to verify completeness.
+
+#### Step 1: Identify All Occurrences
+
+**Don't rely on reading code.** Use systematic searches:
+
+```bash
+# Search for all occurrences of pattern to replace
+grep -n "pattern" path/to/component.tsx
+
+# For styling refactors, find ALL className usages
+grep -n "className" path/to/component.tsx
+
+# Search across multiple files
+grep -rn "pattern" src/components/ComponentName/
+
+# Use regex for complex patterns
+grep -E "(pattern1|pattern2)" path/to/component.tsx
+```
+
+**Check conditional JSX carefully:**
+- Loading states: `{loading && <Icon className="..." />}`
+- Error states: `{error && <span className="...">...</span>}`
+- Conditional rendering: `{condition ? <A className="..." /> : <B />}`
+- Portal content, tooltips, modals
+
+**Context7 MCP for semantic search:**
+When grep isn't enough (finding usage patterns, architectural understanding):
+- Use Context7 to search codebase semantically
+- Find similar patterns across files
+- Understand component relationships
+- Discover indirect usages
+
+#### Step 2: Create Complete Replacement Plan
+
+List EVERY occurrence found:
+```
+Component: Button.tsx
+Occurrences to replace:
+1. Line 45: className="size-4 animate-spin" (loading spinner)
+2. Line 67: className="sr-only" (accessibility text)
+3. Line 23-30: CVA variants (main styling system)
+4. Line 102: className="flex gap-2" (conditional icon layout)
+```
+
+For each occurrence, plan the replacement:
+```
+1. size-4 animate-spin → .loadingSpinner in CSS Module
+2. sr-only → .srOnly in CSS Module  
+3. CVA variants → CSS Module variant classes
+4. flex gap-2 → .iconLayout in CSS Module
+```
+
+#### Step 3: Implement Replacements Systematically
+
+Work through the list one by one:
+- Replace occurrence
+- Mark as complete in checklist
+- Don't skip ahead or assume anything is "similar enough"
+
+**For styling refactors:**
+Create replacement styles BEFORE removing old ones:
+```css
+/* button.module.scss */
+.loadingSpinner {
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  animation: spin 1s linear infinite;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  /* ... full sr-only implementation */
+}
+```
+
+Then replace in component:
+```tsx
+// Before
+<Icon className="size-4 animate-spin" />
+
+// After
+<Icon className={styles.loadingSpinner} />
+```
+
+#### Step 4: Verify Complete Removal
+
+**Search again** to confirm nothing was missed:
+
+```bash
+# For styling refactor - should find NO matches
+grep -E "className=\"[a-z]+-" component.tsx
+
+# For API changes - should find NO old prop usage
+grep -n "oldPropName" component.tsx
+
+# Verify all conditional branches
+grep -n "className" component.tsx  # Should only show new styles
+```
+
+**Zero tolerance:** If search finds ANY remaining occurrences, you're not done.
+
+#### Step 5: Run Visual Tests
+
+```bash
+npm run test:storybook:visual -- --grep "ComponentName"
+```
+
+**Baseline snapshots are source of truth:**
+- DO NOT update snapshots to make tests pass
+- Differences indicate your refactor changed visual output
+- Fix implementation until tests pass
+
+**If tests fail:**
+1. Review diff images carefully
+2. Identify which replacement caused the visual change
+3. Adjust CSS/implementation to match baseline
+4. Re-run tests
+5. Repeat until tests pass
+
+**Common visual regression causes:**
+- Missing CSS properties in replacement
+- Incorrect CSS variable usage
+- Box model differences (margin vs padding)
+- Specificity issues in CSS
+- Missing pseudo-states (:hover, :focus)
+
+#### Step 6: Test All Component States
+
+Don't just test default state:
+- All variants (primary, secondary, etc.)
+- All sizes (small, medium, large)
+- All states (default, hover, focus, active, disabled, loading)
+- Dark/light themes
+- Responsive breakpoints
+
+```typescript
+const states = ['default', 'hover', 'focus', 'disabled', 'loading'];
+const variants = ['primary', 'secondary', 'tertiary'];
+
+for (const variant of variants) {
+  for (const state of states) {
+    await playwright_navigate({
+      url: `http://localhost:6006/?path=/story/button--${variant}-${state}`
+    });
+    await playwright_screenshot({
+      name: `button-${variant}-${state}`,
+      fullPage: false
+    });
+  }
+}
+```
+
+### Using Context7 MCP for Refactoring
+
+**When to use Context7:**
+
+1. **Understanding component patterns:**
+   - "How is this component used across the codebase?"
+   - "What other components follow this pattern?"
+   - "Are there similar styling approaches I should know about?"
+
+2. **Finding indirect usages:**
+   - Components that import and re-export
+   - Higher-order components wrapping target
+   - Composition patterns that aren't obvious from grep
+
+3. **Learning project conventions:**
+   - "What's the standard way to handle accessibility classes?"
+   - "How do other components structure their CSS modules?"
+   - "What design tokens are available?"
+
+**Example Context7 queries:**
+```
+"Show me all components using the sr-only pattern"
+"Find components with loading spinner animations"
+"What's the pattern for CSS module variants in this project?"
+```
+
+### Refactoring Checklist
+
+Use this checklist for every refactoring task:
+
+- [ ] Used grep/search to find ALL occurrences (not visual inspection)
+- [ ] Checked conditional JSX (loading, error, edge cases)
+- [ ] Created complete replacement plan listing every occurrence
+- [ ] Implemented replacements systematically (one by one)
+- [ ] Verified complete removal with grep (zero remaining)
+- [ ] Ran visual tests against baseline snapshots
+- [ ] Tests pass without updating snapshots
+- [ ] Tested all component variants
+- [ ] Tested all component states (hover, focus, disabled, loading)
+- [ ] Tested responsive/theme variations if applicable
+- [ ] Verified component behavior unchanged (props, events, logic)
+- [ ] Built project successfully
+- [ ] No console errors in Storybook
+
+**If you can't check all boxes, the refactor is incomplete.**
+
+### Common Refactoring Mistakes
+
+❌ **Visual inspection only** - Missing occurrences in conditional code
+❌ **Incomplete search** - Not checking all file types or patterns
+❌ **Assuming similarity** - "This is the same as the last one" (it's not)
+❌ **Updating snapshots** - Making tests pass instead of fixing code
+❌ **Testing one state** - Missing regressions in hover/focus/disabled
+❌ **Ignoring accessibility** - Forgetting sr-only, aria attributes
+❌ **Skipping edge cases** - Not testing error/loading/empty states
+
+### Success Criteria for Refactoring
+
+✅ Zero occurrences of old pattern (verified with grep)
+✅ All visual regression tests pass (no snapshot updates)
+✅ All component states tested and pass
+✅ Component behavior unchanged (props, events work identically)
+✅ Project builds successfully
+✅ No new console errors or warnings
+✅ Storybook renders correctly
+✅ Code follows project conventions
+
 ## Related Skills
 
 - **test-driven-development**: Apply TDD principles to UI component testing
