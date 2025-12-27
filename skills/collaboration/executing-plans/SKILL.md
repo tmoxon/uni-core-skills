@@ -2,25 +2,18 @@
 name: Executing Plans
 description: Execute detailed plans with parallel task dispatch for independent tasks and review checkpoints
 when_to_use: when partner provides a complete implementation plan to execute with parallel optimization for independent tasks and review checkpoints
-version: 2.3.0
+version: 2.4.0
 ---
 
 # Executing Plans
 
-## Context
-
-- You are running inside a Docker container.
-- `/workspace` is your own code and logic.
-- `/target` is the actual target repository where code should be written.
-- Always treat `/target` as the main project.
-
 ## Overview
 
-Load behavioral plan, analyze dependency graph, execute independent tasks in parallel using strict Test-Driven Development methodology, report for review between batches.
+Load behavioral plan, analyze dependency graph, execute independent tasks in parallel using Test-Driven Development methodology, report for review between batches.
 
 **Core principle:** TDD-driven execution with parallel dispatch for independent tasks and checkpoints for architect review.
 
-**Every task MUST follow Red-Green-Refactor cycle using @testing/test-driven-development skill.**
+**Every task that makes sense for TDD must follow Red-Green-Refactor cycle using @testing/test-driven-development skill.**
 
 **Parallel execution:** Independent main tasks execute concurrently using @collaboration/dispatching-parallel-agents pattern.
 
@@ -42,15 +35,7 @@ Load behavioral plan, analyze dependency graph, execute independent tasks in par
    - Single plan file: `docs/plans/YYYY-MM-DD-<name>.md` (legacy)
    - Multi-file plan: `docs/plans/YYYY-MM-DD-<name>/plan.md` (preferred)
 2. **Verify plan is committed to git:**
-   ```bash
-   cd /target
-   git status docs/plans/
-   ```
-   - **If plan files show as untracked or modified:** 
-     - **STOP execution immediately**
-     - Tell partner: "⚠️ The implementation plan in `docs/plans/<folder-name>/` is not committed to git. Please commit it first using: `git add docs/plans/<folder-name>/ && git commit -m 'docs: Add implementation plan for <feature-name>'`"
-     - **Wait for partner to commit before proceeding**
-   - **If plan is committed:** Proceed to next step
+   - If the plan isn't committed, you MUST tell the user and ask for confirmation of whether to contine.
 3. **If multi-file plan:**
    - Read `plan.md` for orchestration overview and execution order
    - Identify all task files (`task1.md`, `task2.md`) and subtask files (variable quantity based on plan complexity)
@@ -70,30 +55,10 @@ Load behavioral plan, analyze dependency graph, execute independent tasks in par
 12. If plan lacks hierarchical structure: Ask partner to revise using @collaboration/writing-plans
 13. If no concerns: Create TodoWrite with hierarchical task list and parallel execution strategy
 
-### Step 3: Implement the plan in the target repo
-- Create or update files directly under `/target/src/...`
-- If a file needs patching (e.g., add route, enable flag), add those patch instructions to `/target/claude.md` under `actions:`.
-- Do **not** write code to `/workspace`; all code goes in `/target`.
-- If the project needs new dependencies, list them under `"packages"` in `/target/claude.md` (this will trigger `npm install` later).
-
-Example:
-
-```json
-{
-  "actions": [
-    {
-      "kind": "applyPatch",
-      "file": "src/config/example-config.ts",
-      "patch": "--- a/src/config/example-config.ts\n+++ b/src/config/example-config.ts\n@@\n-export const featureEnabled = false;\n+export const featureEnabled = true;\n"
-    }
-  ]
-}
-```
-
-### Step 4: Execute Tasks with Parallel Dispatch
+### Step 3: Execute Tasks with Parallel Dispatch
 **Execute tasks using dependency-aware parallel dispatch**
 
-#### 4.1 Analyze Execution Strategy
+#### 3.1 Analyze Execution Strategy
 1. **Group tasks by dependency level:**
    - **Level 0:** Independent main tasks with no dependencies
    - **Level 1:** Tasks that depend only on Level 0 tasks
@@ -106,7 +71,7 @@ Example:
    - **Parallel:** Independent tasks can run concurrently
    - **Hybrid:** Some levels parallel, some sequential
 
-#### 4.2 Dispatch Execution Strategy
+#### 3.2 Dispatch Execution Strategy
 
 **For Independent Tasks (Parallel Dispatch):**
 ```typescript
@@ -154,7 +119,7 @@ Task agent for Task X:
 - Verify interface contracts are available
 - Execute next dependency level (may also be parallel within that level)
 
-#### 4.3 Parallel Execution Management
+#### 3.3 Parallel Execution Management
 1. **Mark all parallel tasks as in_progress**
 2. **Dispatch all parallel agents simultaneously** 
 3. **Monitor parallel execution** - agents work independently
@@ -166,39 +131,17 @@ Task agent for Task X:
 6. **Mark all parallel tasks as completed** when verified
 7. **Proceed to next dependency level**
 
-#### 4.4 Integration and Verification
+#### 3.4 Integration and Verification
 After each parallel batch:
 1. **Run integration tests** - verify parallel implementations work together
 2. **Check interface contracts** - ensure dependent tasks can proceed
 3. **Resolve any conflicts** - if agents modified overlapping areas
 4. **Update dependency status** - mark interfaces available for next level
 
-### Step 5: Apply and commit the plan
+### Step 4: Apply and commit the plan
+Commit the code to the local git repo with an appropriate commit message. Reference the plan file in the commit message.
 
-When you're done writing or updating `/target/claude.md`, run the following commands:
-
-```bash
-# make git safe (once per container)
-git config --global --add safe.directory /target
-
-# create or switch to a working branch
-git -C /target checkout -B chore/claude/apply
-
-# apply structured steps (patches, file writes, npm installs)
-node /workspace/src/cli.js --repo /target --apply
-
-# add and commit all changes
-git -C /target add -A
-git -C /target commit -m "chore: apply Claude plan" || echo "nothing to commit"
-```
-
-After running, confirm the branch contains your changes:
-
-```bash
-git -C /target status
-```
-
-### Step 6: Report Parallel Progress
+### Step 5: Report Parallel Progress
 When parallel batch complete:
 - **Show execution strategy used:** Sequential, Parallel, or Hybrid approach
 - **Report parallel batch results:** Which tasks executed concurrently and outcomes
@@ -212,7 +155,7 @@ When parallel batch complete:
 - **Performance metrics:** Time saved through parallel execution vs sequential
 - Say: "Ready for feedback on parallel execution progress."
 
-### Step 7: Manage Dependencies and Continue Parallel Execution
+### Step 6: Manage Dependencies and Continue Parallel Execution
 Based on feedback:
 - Apply changes if needed to completed tasks
 - **Analyze dependency graph:** Which tasks are now unblocked by completed parallel batch
@@ -222,7 +165,7 @@ Based on feedback:
 - **Optimize execution strategy:** Choose parallel vs sequential based on current dependency level
 - Repeat until complete hierarchy executed with maximum parallelization
 
-### Step 8: Report back
+### Step 7: Report back
 After applying and committing:
 - Print a summary of what changed (files added, modified, deleted).
 - Confirm the current branch name.
@@ -234,7 +177,7 @@ When creating a branch, name it based on the plan topic, for example:
 - Refactor: `refactor/auth-service`
 - Fallback: `chore/claude/apply`
 
-### Step 9: Complete Development
+### Step 8: Complete Development
 
 After all tasks complete and verified:
 - Announce: "I'm using the Finishing a Development Branch skill to complete this work."
@@ -269,37 +212,12 @@ After all tasks complete and verified:
 - Isolated failure domains
 
 **Costs of Parallel:**
-- 20-40% more tokens (each agent needs full context)
+- Up to 40% more tokens (each agent needs full context)
 - Integration complexity increases
 - Harder to debug conflicts
 - API rate limits may serialize anyway
 
 **Decision Rule:** Use parallel when tasks are truly independent and plan complexity justifies overhead.
-
-### Example: E-commerce Checkout Plan
-
-**Dependency Analysis:**
-```
-Level 0 (Independent - PARALLEL):
-├── Task 1: User Authentication (auth service, middleware)  
-├── Task 2: Product Catalog (database, API endpoints)
-└── Task 3: Payment Gateway (external service integration)
-
-Level 1 (Depends on Level 0 - PARALLEL within level):
-├── Task 4: Shopping Cart (needs Task 1: auth, Task 2: products)
-└── Task 5: Email Service (needs Task 1: auth for user data)
-
-Level 2 (Depends on Level 1 - SEQUENTIAL):
-└── Task 6: Checkout Flow (needs Task 4: cart, Task 5: email, Task 3: payment)
-```
-
-**Execution Strategy:**
-1. **Parallel Batch 1:** Dispatch Tasks 1, 2, 3 simultaneously (30 min → ~35 min total)
-2. **Integration Check:** Verify auth, catalog, and payment interfaces work
-3. **Parallel Batch 2:** Dispatch Tasks 4, 5 simultaneously (20 min → ~25 min total) 
-4. **Final Integration:** Task 6 sequentially (15 min)
-
-**Time Savings:** 85 minutes vs 120 minutes sequential = 35 minute speedup (29% faster)
 
 ## When to Stop and Ask for Help
 
